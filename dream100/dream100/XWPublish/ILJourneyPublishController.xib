@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ILJourneyPublishController">
+            <connections>
+                <outlet property="mianScrollView" destination="JOT-Uq-fgK" id="pUF-YZ-24n"/>
+                <outlet property="titleLB" destination="BKE-gE-Zch" id="Fmr-pc-1K4"/>
+                <outlet property="view" destination="OR2-Sb-qO1" id="THo-sU-dBV"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="OR2-Sb-qO1">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JOT-Uq-fgK"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xnj-h1-zsM" userLabel="backgroundView">
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="分享新鲜事" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BKE-gE-Zch" userLabel="titleLB">
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="WPY-X9-osx"/>
+                                <constraint firstAttribute="width" constant="218" id="a0p-rB-aA3"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" red="0.1215686275" green="0.12941176469999999" blue="0.14117647059999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="WPY-X9-osx"/>
+                                    <exclude reference="a0p-rB-aA3"/>
+                                </mask>
+                            </variation>
+                            <variation key="widthClass=compact">
+                                <mask key="constraints">
+                                    <include reference="WPY-X9-osx"/>
+                                    <include reference="a0p-rB-aA3"/>
+                                </mask>
+                            </variation>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="BKE-gE-Zch" firstAttribute="top" secondItem="xnj-h1-zsM" secondAttribute="top" id="P6p-Mi-aot"/>
+                        <constraint firstAttribute="bottom" secondItem="BKE-gE-Zch" secondAttribute="bottom" id="hKf-IR-7Cf"/>
+                        <constraint firstItem="BKE-gE-Zch" firstAttribute="centerX" secondItem="xnj-h1-zsM" secondAttribute="centerX" id="qoh-Oo-WG8"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="subviews">
+                            <exclude reference="BKE-gE-Zch"/>
+                        </mask>
+                        <mask key="constraints">
+                            <exclude reference="P6p-Mi-aot"/>
+                            <exclude reference="hKf-IR-7Cf"/>
+                            <exclude reference="qoh-Oo-WG8"/>
+                        </mask>
+                    </variation>
+                    <variation key="widthClass=compact">
+                        <mask key="subviews">
+                            <include reference="BKE-gE-Zch"/>
+                        </mask>
+                        <mask key="constraints">
+                            <include reference="P6p-Mi-aot"/>
+                            <include reference="hKf-IR-7Cf"/>
+                            <include reference="qoh-Oo-WG8"/>
+                        </mask>
+                    </variation>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="JOT-Uq-fgK" secondAttribute="trailing" id="FEP-l0-xoL"/>
+                <constraint firstItem="xnj-h1-zsM" firstAttribute="leading" secondItem="OR2-Sb-qO1" secondAttribute="leading" id="GmM-nY-0Br"/>
+                <constraint firstItem="JOT-Uq-fgK" firstAttribute="top" secondItem="OR2-Sb-qO1" secondAttribute="top" constant="64" id="JKM-8C-8aK"/>
+                <constraint firstAttribute="trailing" secondItem="xnj-h1-zsM" secondAttribute="trailing" id="ZaK-j4-8oE"/>
+                <constraint firstItem="xnj-h1-zsM" firstAttribute="top" secondItem="OR2-Sb-qO1" secondAttribute="top" constant="20" id="fac-bc-Odm"/>
+                <constraint firstItem="JOT-Uq-fgK" firstAttribute="top" secondItem="xnj-h1-zsM" secondAttribute="bottom" id="qdg-IU-eb6"/>
+                <constraint firstAttribute="bottom" secondItem="JOT-Uq-fgK" secondAttribute="bottom" id="spw-ca-fHR"/>
+                <constraint firstItem="JOT-Uq-fgK" firstAttribute="leading" secondItem="OR2-Sb-qO1" secondAttribute="leading" id="tjr-V3-R5a"/>
+            </constraints>
+            <variation key="default">
+                <mask key="subviews">
+                    <exclude reference="JOT-Uq-fgK"/>
+                    <exclude reference="xnj-h1-zsM"/>
+                </mask>
+                <mask key="constraints">
+                    <exclude reference="ZaK-j4-8oE"/>
+                    <exclude reference="fac-bc-Odm"/>
+                    <exclude reference="GmM-nY-0Br"/>
+                    <exclude reference="tjr-V3-R5a"/>
+                    <exclude reference="qdg-IU-eb6"/>
+                    <exclude reference="FEP-l0-xoL"/>
+                    <exclude reference="JKM-8C-8aK"/>
+                    <exclude reference="spw-ca-fHR"/>
+                </mask>
+            </variation>
+            <variation key="widthClass=compact">
+                <mask key="subviews">
+                    <include reference="JOT-Uq-fgK"/>
+                    <include reference="xnj-h1-zsM"/>
+                </mask>
+                <mask key="constraints">
+                    <include reference="ZaK-j4-8oE"/>
+                    <include reference="fac-bc-Odm"/>
+                    <include reference="GmM-nY-0Br"/>
+                    <include reference="tjr-V3-R5a"/>
+                    <include reference="qdg-IU-eb6"/>
+                    <include reference="FEP-l0-xoL"/>
+                    <include reference="JKM-8C-8aK"/>
+                    <include reference="spw-ca-fHR"/>
+                </mask>
+            </variation>
+            <point key="canvasLocation" x="279.5" y="333.5"/>
+        </view>
+    </objects>
+</document>
