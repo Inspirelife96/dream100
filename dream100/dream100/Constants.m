@@ -29,9 +29,8 @@ NSString *const kLeanClientKey          = @"c1kgDem6Xe3GbWoQLsIbDQK8";
 NSString *const kShareSDKApplicationId  = @"18ff4896dd415";
 
 #pragma mark - WeiXin
-#warning needo to change to my id
-NSString *const kWXApplicationId        = @"wx18c65b310d0a12d7";
-NSString *const kWXApplicationSecret    = @"0ae5b76ceb716ba86b950cf3a9e79378";
+NSString *const kWXApplicationId        = @"wxf123abd65b3e0595";
+NSString *const kWXApplicationSecret    = @"a79310052c8e4db842941ca080e61bfe";
 
 #pragma mark - QQ
 NSString *const kQQApplicationId        = @"1105819650";

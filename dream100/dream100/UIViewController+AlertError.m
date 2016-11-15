@@ -12,7 +12,7 @@
 @implementation UIViewController (AlertError)
 
 - (void)alertError:(NSError *)error {
-    [SGActionView showAlertWithTitle:@"操作失败" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
+    [SGActionView showAlertWithTitle:@"操作失败3" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
         //
     }];
 }

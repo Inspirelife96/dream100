@@ -8,6 +8,7 @@
 
 #import "ILDreamCell.h"
 #import "MyDreamCache.h"
+#import <TTTTimeIntervalFormatter.h>
 
 @implementation ILDreamCell
 
@@ -34,7 +35,8 @@
     _postContentView.contentString = dreamObject[@"content"];
     _postContentView.imageArray = dreamObject[@"imageFiles"];
     
-    _timeLabel.text = [NSString stringWithFormat:@"%@", dreamObject[@"createdAt"]];
+    TTTTimeIntervalFormatter *timerFormatter = [[TTTTimeIntervalFormatter alloc] init];
+    _timeLabel.text = [timerFormatter stringForTimeIntervalFromDate:[NSDate date] toDate:dreamObject[@"createdAt"]];
     
     _dreamStatusLabel.text = [NSString stringWithFormat:@"共梦者(%ld) ｜ 心路历程(%ld)", (long)[_dreamObject[@"followers"] integerValue], (long)[_dreamObject[@"journeys"] integerValue]];
     

@@ -22,6 +22,7 @@
 }
 
 - (void)setUserObject:(AVUser *)userObject {
+    _userProfileDefaultView.delegate = _delegate;
     _userProfileDefaultView.userObject = userObject;
 }
 

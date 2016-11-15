@@ -8,18 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "ILPostContentView.h"
-#import "ILUserProfileView.h"
+#import "ILUserProfileDefaultView.h"
 
 @protocol ILJourneyCellDelegate <NSObject>
 
-- (void)selectLike:(id)sender;
-- (void)selectComment:(id)sender;
+- (void)likeJourney:(AVObject *)journeyObject;
+- (void)commentJourney:(AVObject *)journeyObject;
 
 @end
 
 @interface ILJourneyCell : UITableViewCell
 
-@property(weak, nonatomic) IBOutlet ILUserProfileView *userProfileView;
+@property(weak, nonatomic) IBOutlet ILUserProfileDefaultView *userProfileDefaultView;
 @property(weak, nonatomic) IBOutlet ILPostContentView *postContentView;
 @property(weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property(weak, nonatomic) IBOutlet UIButton *likeButton;

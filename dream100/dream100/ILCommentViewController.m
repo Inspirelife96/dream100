@@ -10,7 +10,7 @@
 #import "CommentSectionHeaderCell.h"
 #import "CommentCell.h"
 #import "EmptyCell.h"
-#import "LikedUserCell.h"
+#import "UserProfileCell.h"
 #import "MyLikeCache.h"
 #import "ILJourneyCell.h"
 #import "MJRefresh.h"
@@ -21,14 +21,16 @@
 #import "ILDreamDBManager.h"
 #import "UIViewController+AlertError.h"
 #import "UIViewController+Login.h"
+#import "ILUserDreamViewController.h"
 
-@interface ILCommentViewController () <UITableViewDataSource, UITableViewDelegate, CommentSectionHeaderCellDelegate, ILJourneyCellDelegate>
+@interface ILCommentViewController () <UITableViewDataSource, UITableViewDelegate, CommentSectionHeaderCellDelegate, ILJourneyCellDelegate, CommentCellDelegate, ILUserProfileDefaultViewDelegate>
 
 @property(strong, nonatomic) ILJourneyCell *journeyCell;
 
 @property(strong, nonatomic) NSMutableArray *commentArray;
 @property(strong, nonatomic) NSMutableArray *likeArray;
 @property(strong, nonatomic) NSMutableArray *dataForCellArray;
+@property(strong, nonatomic) AVObject *replyObject;
 
 @property(assign, nonatomic) BOOL isEmpty;
 
@@ -95,9 +97,9 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILDreamDBOperationErrorNotification"];
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILJourneyLikeUpdateNotification"];
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILJourneyCommentUpdateNotification"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamDBOperationErrorNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyLikeUpdateNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyCommentUpdateNotification" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -130,12 +132,15 @@
     } else {
         if (_dataForCellArray == _commentArray) {
             CommentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CommentCell" forIndexPath:indexPath];
+            cell.delegate = self;
             cell.commentObject = _commentArray[indexPath.row];
             return cell;
         } else {
-            LikedUserCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LikedUserCell" forIndexPath:indexPath];
-            cell.likedUserObject = _likeArray[indexPath.row];
-            return cell;
+            UserProfileCell *userProfileCell = [tableView dequeueReusableCellWithIdentifier:@"UserProfileCell" forIndexPath:indexPath];
+            userProfileCell.selectionStyle = UITableViewCellSelectionStyleNone;
+            userProfileCell.delegate = self;
+            userProfileCell.userObject = _likeArray[indexPath.row][@"fromUser"];
+            return userProfileCell;
         }
     }
 }
@@ -151,7 +156,7 @@
         if (_dataForCellArray == _commentArray) {
             return [CommentCell HeightForCommentCell:_dataForCellArray[indexPath.row]];
         } else {
-            return 65.0f;
+            return 81.0f;
         }
     }
 }
@@ -174,7 +179,12 @@
 #pragma mark implement super class method
 - (void)sendComment {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [ILDreamDBManager addComment:self.inputTextView.text toUser:_journeyObject[@"user"] onJourney:_journeyObject];
+    if (_replyObject) {
+        [ILDreamDBManager addComment:self.inputTextView.text toUser:_replyObject[@"fromUser"] onJourney:_journeyObject];
+        _replyObject = nil;
+    } else {
+        [ILDreamDBManager addComment:self.inputTextView.text toUser:_journeyObject[@"user"] onJourney:_journeyObject];
+    }
 }
 
 #pragma mark CommentSectionHeaderCellDelegate
@@ -190,35 +200,7 @@
     [self refreshData];
 }
 
-#pragma mark ILJourneyCellDelegate
-- (void)selectComment:(id)sender {
-    if(![self isLogin]) {
-        return;
-    }
-    
-    UIButton *commentButton = (UIButton *)sender;
-    [commentButton setUserInteractionEnabled:NO];
-    
-    [self.commentInputView setHidden:NO];
-    [self.commentInputView setUserInteractionEnabled:YES];
-    [self.inputTextView becomeFirstResponder];
-}
 
-- (void)selectLike:(id)sender {
-    if(![self isLogin]) {
-        return;
-    }
-    
-    UIButton *likeButton = (UIButton *)sender;
-    [likeButton setUserInteractionEnabled:NO];
-
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    if  ([[MyLikeCache sharedInstance] isLiked:_journeyObject[@"objectId"]]) {
-        [ILDreamDBManager removeLike:_journeyObject];
-    } else {
-        [ILDreamDBManager addLike:_journeyObject];
-    }
-}
 
 #pragma mark Notification Handlers
 - (void)journeyLikeUpdate:(NSNotification*)notification {
@@ -245,7 +227,7 @@
 
 - (void)dreamDBOperationError:(id)sender {
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [SGActionView showAlertWithTitle:@"操作失败" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
+    [SGActionView showAlertWithTitle:@"操作失败1" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
         //
     }];
 }
@@ -261,14 +243,14 @@
         
         query = [AVQuery queryWithClassName:@"Comment"];
         [query whereKey:@"journey" equalTo:_journeyObject];
-        [query includeKey:@"user"];
+        [query includeKey:@"fromUser"];
         [query addDescendingOrder:@"createdAt"];
         [query setLimit:10];
     } else {
         commentArray = _likeArray;
         query = [AVQuery queryWithClassName:@"Like"];
         [query whereKey:@"journey" equalTo:_journeyObject];
-        [query includeKey:@"user"];
+        [query includeKey:@"fromUser"];
         [query addDescendingOrder:@"createdAt"];
         [query setLimit:10];
     }
@@ -312,7 +294,7 @@
             AVObject *lastObject = commentArray[commentArray.count - 1];
             [query whereKey:@"createdAt" lessThan:lastObject[@"createdAt"]];
         }
-        [query includeKey:@"user"];
+        [query includeKey:@"fromUser"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
     } else {
@@ -324,7 +306,7 @@
             AVObject *lastObject = commentArray[commentArray.count - 1];
             [query whereKey:@"createdAt" lessThan:lastObject[@"createdAt"]];
         }
-        [query includeKey:@"user"];
+        [query includeKey:@"fromUser"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
     }
@@ -349,5 +331,49 @@
         }
     }];
 }
+
+- (void)clickProfile:(AVUser *)userObject {
+    ILUserDreamViewController *userDreamVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ILUserDreamViewController"];
+    userDreamVC.currentUser = userObject;
+    [self.navigationController pushViewController:userDreamVC animated:YES];
+}
+
+- (void)replyComment:(AVObject *)commentObject {
+    if(![self isLogin]) {
+        return;
+    }
+    
+    _replyObject = commentObject;
+    
+    [self.commentInputView setHidden:NO];
+    [self.commentInputView setUserInteractionEnabled:YES];
+    [self.inputTextView becomeFirstResponder];
+    self.inputTextView.text = [NSString stringWithFormat:@"@%@: ", commentObject[@"fromUser"][@"username"]];
+}
+
+- (void)commentJourney:(AVObject *)journeyObject {
+    if(![self isLogin]) {
+        return;
+    }
+    
+    [self.commentInputView setHidden:NO];
+    [self.commentInputView setUserInteractionEnabled:YES];
+    [self.inputTextView becomeFirstResponder];
+}
+
+- (void)likeJourney:(AVObject *)journeyObject {
+    if(![self isLogin]) {
+        return;
+    }
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    if  ([[MyLikeCache sharedInstance] isLiked:journeyObject[@"objectId"]]) {
+        [ILDreamDBManager removeLike:journeyObject];
+    } else {
+        [ILDreamDBManager addLike:journeyObject];
+    }
+}
+
+
 
 @end

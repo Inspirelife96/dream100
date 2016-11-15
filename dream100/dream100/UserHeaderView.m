@@ -8,6 +8,7 @@
 
 #import "UserHeaderView.h"
 #import "CDUserManager.h"
+#import "CDUtils.h"
 
 @implementation UserHeaderView
 
@@ -22,8 +23,14 @@
 - (void)setUserObject:(AVUser *)userObject {
     _userObject = userObject;
     
+    _profileImageView.layer.masksToBounds = YES;
+    _profileImageView.layer.cornerRadius = 22.0f;
+    _profileImageView.layer.borderWidth = 3.0f;
+    _profileImageView.layer.borderColor = FlatLime.CGColor;
+    
     [[CDUserManager manager] getAvatarImageOfUser:userObject block:^(UIImage *image) {
-        _profileImageView.image = image;
+        UIImage *rounded = [CDUtils roundImage:image toSize:CGSizeMake(44, 44) radius:10];
+        _profileImageView.image = rounded;
     }];
     
     _userNameLabel.text = userObject[@"username"];
@@ -31,7 +38,7 @@
     [userObject getFollowersAndFollowees:^(NSDictionary *dict, NSError *error) {
         NSArray *followers = dict[@"followers"];
         NSArray *followees = dict[@"followees"];
-        _followInfoLabel.text = [NSString stringWithFormat:@"关注:%ld | 粉丝:%ld", (long)followers.count, (long)followees.count];
+        _followInfoLabel.text = [NSString stringWithFormat:@"关注:%ld | 粉丝:%ld", (long)followees.count, (long)followers.count];
     }];
     
     if ([userObject[@"objectId"] isEqualToString:[AVUser currentUser][@"objectId"]]) {

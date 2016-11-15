@@ -69,8 +69,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILDreamDBOperationErrorNotification"];
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILDreamUIUpdateNotification"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamDBOperationErrorNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamUIUpdateNotification" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -138,7 +138,7 @@
 #pragma mark Notification Handlers
 - (void)dreamDBOperationError:(id)sender {
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [SGActionView showAlertWithTitle:@"操作失败" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
+    [SGActionView showAlertWithTitle:@"操作失败2" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
         //
     }];
 }

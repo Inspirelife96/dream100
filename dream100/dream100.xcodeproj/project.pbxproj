@@ -39,6 +39,7 @@
 		255C49DD1DA745D30003333E /* ILJourneyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 255C49DC1DA745D30003333E /* ILJourneyViewController.m */; };
 		255C49E01DA785810003333E /* DreamWithHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 255C49DF1DA785810003333E /* DreamWithHeaderCell.m */; };
 		255C49E31DA870BF0003333E /* DreamContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 255C49E21DA870BF0003333E /* DreamContentView.m */; };
+		255CE54D1DDAF3FC005E2D03 /* ILDreamSearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 255CE54C1DDAF3FC005E2D03 /* ILDreamSearchResultViewController.m */; };
 		256798611DC09CF0002FB3BD /* ILDreamDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 256798601DC09CF0002FB3BD /* ILDreamDBManager.m */; };
 		2567986B1DC0C85C002FB3BD /* ILJourneyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2567986A1DC0C85C002FB3BD /* ILJourneyModel.m */; };
 		2567986F1DC1A4CD002FB3BD /* iRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2567986C1DC1A4CD002FB3BD /* iRate.bundle */; };
@@ -280,6 +281,8 @@
 		255C49DF1DA785810003333E /* DreamWithHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DreamWithHeaderCell.m; sourceTree = "<group>"; };
 		255C49E11DA870BF0003333E /* DreamContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DreamContentView.h; sourceTree = "<group>"; };
 		255C49E21DA870BF0003333E /* DreamContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DreamContentView.m; sourceTree = "<group>"; };
+		255CE54B1DDAF3FC005E2D03 /* ILDreamSearchResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILDreamSearchResultViewController.h; sourceTree = "<group>"; };
+		255CE54C1DDAF3FC005E2D03 /* ILDreamSearchResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILDreamSearchResultViewController.m; sourceTree = "<group>"; };
 		2567985F1DC09CF0002FB3BD /* ILDreamDBManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILDreamDBManager.h; sourceTree = "<group>"; };
 		256798601DC09CF0002FB3BD /* ILDreamDBManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILDreamDBManager.m; sourceTree = "<group>"; };
 		256798691DC0C85C002FB3BD /* ILJourneyModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILJourneyModel.h; sourceTree = "<group>"; };
@@ -693,6 +696,8 @@
 			children = (
 				25CE99BD1DA3958700024048 /* ILDiscoveryViewController.h */,
 				25CE99BE1DA3958700024048 /* ILDiscoveryViewController.m */,
+				255CE54B1DDAF3FC005E2D03 /* ILDreamSearchResultViewController.h */,
+				255CE54C1DDAF3FC005E2D03 /* ILDreamSearchResultViewController.m */,
 			);
 			name = Discovery;
 			sourceTree = "<group>";
@@ -1777,6 +1782,7 @@
 				25AF839A1DBBB65000FB057B /* SGAlertMenu.m in Sources */,
 				253D84621DD1DD3D000357B0 /* NSString+PinYin.m in Sources */,
 				2537DC121DB203F00056B4D9 /* CommentSectionHeaderCell.m in Sources */,
+				255CE54D1DDAF3FC005E2D03 /* ILDreamSearchResultViewController.m in Sources */,
 				25CE99D31DA3B57600024048 /* ILDreamModel.m in Sources */,
 				25F47C4F1DD07A7F00970ADD /* NSBundle+JSQMessages.m in Sources */,
 				25F47C6A1DD07A7F00970ADD /* JSQMessagesCollectionView.m in Sources */,

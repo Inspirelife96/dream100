@@ -15,6 +15,7 @@
 #import "EmptyCell.h"
 #import "DreamContentView.h"
 #import "UserInfoView.h"
+#import "UserProfileCell.h"
 
 #import "ILJourneyPublishController.h"
 #import "ILCommentViewController.h"
@@ -25,14 +26,16 @@
 #import "SGActionView.h"
 #import "MyLikeCache.h"
 
+
 #import "MJRefresh.h"
 
 #import "UIViewController+DreamAction.h"
 #import "UIViewController+AlertError.h" 
 
 #import "UIViewController+Login.h"
+#import <TTTTimeIntervalFormatter.h>
 
-@interface ILJourneyViewController () <UITableViewDataSource, UITableViewDelegate, ILJourneyCellDelegate, ILJourneySectionHeaderCellDelegate, ILDreamCellDelegate>
+@interface ILJourneyViewController () <UITableViewDataSource, UITableViewDelegate, ILJourneyCellDelegate, ILJourneySectionHeaderCellDelegate, ILDreamCellDelegate, ILUserProfileDefaultViewDelegate>
 
 @property(strong, nonatomic) ILDreamCell *dreamCell;
 
@@ -40,17 +43,16 @@
 @property(strong, nonatomic) NSMutableArray *latestJourneyArray;
 @property(strong, nonatomic) NSMutableArray *myJourneyArray;
 @property(strong, nonatomic) NSMutableArray *joinedUserArray;
-
 @property(strong, nonatomic) NSMutableArray *journeyArray;
-
 @property(assign, nonatomic) BOOL isEmpty;
-
 @property(assign, nonatomic) AVObject *selectedJourneyObject;
 
 @end
 
 @implementation ILJourneyViewController
 
+
+#pragma mark Life Circel
 - (void)viewDidLoad {
     
     self.bHiddenUI = YES;
@@ -118,10 +120,10 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILDreamDBOperationErrorNotification"];
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILDreamUIUpdateNotification"];
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILJourneyLikeUpdateNotification"];
-    [[NSNotificationCenter defaultCenter] removeObserver:@"ILJourneyCommentUpdateNotification"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamDBOperationErrorNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamUIUpdateNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyLikeUpdateNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyCommentUpdateNotification" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -153,10 +155,15 @@
         return emptyCell;
     } else {
         if (_journeyArray == _joinedUserArray) {
-            JoinedUserCell *joinedUserCell = [tableView dequeueReusableCellWithIdentifier:@"JoinedUserCell" forIndexPath:indexPath];
-            joinedUserCell.selectionStyle = UITableViewCellSelectionStyleNone;
-            joinedUserCell.dreamFollowObject = _joinedUserArray[indexPath.row];
-            return joinedUserCell;
+            UserProfileCell *userProfileCell = [tableView dequeueReusableCellWithIdentifier:@"UserProfileCell" forIndexPath:indexPath];
+            userProfileCell.selectionStyle = UITableViewCellSelectionStyleNone;
+            userProfileCell.delegate = self;
+            userProfileCell.userObject = _joinedUserArray[indexPath.row][@"user"];
+            
+//            TTTTimeIntervalFormatter *timeFormater = [[TTTTimeIntervalFormatter alloc] init];
+//            NSString *timeCreated = [timeFormater stringForTimeIntervalFromDate:[NSDate date] toDate:_joinedUserArray[indexPath.row][@"createdAt"]];
+//            userProfileCell.userProfileDefaultView.mottoLabel.text = [NSString stringWithFormat:@"%@许下这个个梦想", timeCreated];
+            return userProfileCell;
         } else {
             ILJourneyCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ILJourneyCell" forIndexPath:indexPath];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -164,7 +171,6 @@
             cell.delegate = self;
             cell.likeButton.tag = indexPath.row;
             cell.commentButton.tag = indexPath.row;
-            cell.userProfileView.userButton.tag = indexPath.row;
             return cell;
         }
     }
@@ -192,7 +198,7 @@
         return  240.0f;
     } else {
         if (_journeyArray == _joinedUserArray) {
-            return 64.0f;
+            return 81.0f;
         } else {
             return [ILJourneyCell HeightForJourneyCell:_journeyArray[indexPath.row]];
         }
@@ -251,32 +257,36 @@
 }
 
 #pragma mark ILJourneyCellDelegate
-- (void)selectComment:(id)sender {
-    UIButton *button = (UIButton*)sender;
-    [button setUserInteractionEnabled:NO];
-    _selectedJourneyObject = _journeyArray[button.tag];
+- (void)commentJourney:(AVObject *)journeyObject {
+    if(![self isLogin]) {
+        return;
+    }
+    
+    _selectedJourneyObject = journeyObject;
     
     [self.commentInputView setHidden:NO];
     [self.commentInputView setUserInteractionEnabled:YES];
     [self.inputTextView becomeFirstResponder];
 }
 
-- (void)selectLike:(id)sender {
+- (void)likeJourney:(AVObject *)journeyObject {
     if(![self isLogin]) {
         return;
     }
     
-    UIButton *likeButton = (UIButton *)sender;
-    [likeButton setUserInteractionEnabled:NO];
-    
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-
-    AVObject *journeyObject = _journeyArray[likeButton.tag];
     if  ([[MyLikeCache sharedInstance] isLiked:journeyObject[@"objectId"]]) {
         [ILDreamDBManager removeLike:journeyObject];
     } else {
         [ILDreamDBManager addLike:journeyObject];
     }
+}
+
+#pragma mark ILJourneyCellDelegate
+- (void)clickProfile:(AVUser *)userObject {
+    ILUserDreamViewController *userDreamVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ILUserDreamViewController"];
+    userDreamVC.currentUser = userObject;
+    [self.navigationController pushViewController:userDreamVC animated:YES];
 }
 
 #pragma mark ILDreamCellDelegate
@@ -290,10 +300,6 @@
 
 #pragma mark implement super class method
 - (void)sendComment {
-    if(![self isLogin]) {
-        return;
-    }
-    
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [ILDreamDBManager addComment:self.inputTextView.text toUser:_selectedJourneyObject[@"user"] onJourney:_selectedJourneyObject];
 }

@@ -12,6 +12,7 @@
 
 - (void)followOrUnfollow:(id)sender;
 - (void)sendMessage:(id)sender;
+- (void)filter:(NSInteger)dreamCategory;
 
 @end
 
@@ -25,6 +26,7 @@
 @property(strong, nonatomic) IBOutlet UIButton *messageButton;
 
 @property (nonatomic, weak) id<UserHeaderViewDelegate> delegate;
+
 
 - (IBAction)clickFollowButton:(id)sender;
 - (IBAction)clickMessageButton:(id)sender;

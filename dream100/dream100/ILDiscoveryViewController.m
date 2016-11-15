@@ -15,9 +15,13 @@
 #import "MJRefresh.h"
 #import "SGActionView.h"
 
-#import "UIViewController+AlertError.h"
+#import <PYSearch.h>
+#import "PYTempViewController.h"
 
-@interface ILDiscoveryViewController () <BHInfiniteScrollViewDelegate, ILDiscoverySectionHeaderCellDelegate>
+#import "UIViewController+AlertError.h"
+#import "ILDreamSearchResultViewController.h"
+
+@interface ILDiscoveryViewController () <BHInfiniteScrollViewDelegate, ILDiscoverySectionHeaderCellDelegate, PYSearchViewControllerDelegate>
 
 @property(strong, nonatomic) NSMutableArray *hotObjectArray;
 @property(strong, nonatomic) NSMutableArray *latestObjectArray;
@@ -36,6 +40,9 @@
     _followObjectArray = [[NSMutableArray alloc] init];
     
     self.dreamObjectArray = _latestObjectArray;
+    
+    UIBarButtonItem *searchFriendBarButton = [[UIBarButtonItem alloc] initWithTitle:@"搜索" style:UIBarButtonItemStylePlain target:self action:@selector(clickSearchBarButton:)];
+    self.navigationItem.rightBarButtonItem = searchFriendBarButton;
 
     [self initTableViewDataAndRefresh];
 }
@@ -143,7 +150,7 @@
     } else {
         dreamArray = _followObjectArray;
         
-        innerQuery = [AVUser followeeQuery:@"USER_OBJECT_ID"];
+        innerQuery = [AVUser followeeQuery:[AVUser currentUser].objectId];
         query = [AVQuery queryWithClassName:@"Dream"];
         [query whereKey:@"user" matchesKey:@"followee" inQuery:innerQuery];
         [query orderByDescending:@"createdAt"];
@@ -200,7 +207,7 @@
     } else {
         dreamArray = _followObjectArray;
         
-        innerQuery = [AVUser followeeQuery:@"USER_OBJECT_ID"];
+        innerQuery = [AVUser followeeQuery:[AVUser currentUser].objectId];
         query = [AVQuery queryWithClassName:@"Dream"];
         if (dreamArray.count > 0) {
             AVObject *lastObject = dreamArray[dreamArray.count - 1];
@@ -230,6 +237,29 @@
             }
         }
     }];
+}
+
+- (void)clickSearchBarButton:(id)sender {
+    // 1.创建热门搜索
+     NSArray *hotSeaches = @[@"英雄", @"大学", @"电影", @"游戏", @"爱", @"狗", @"买", @"创意",];
+    // 2. 创建控制器
+    PYSearchViewController *searchViewController = [PYSearchViewController searchViewControllerWithHotSearches:hotSeaches searchBarPlaceholder:@"梦想关键字" didSearchBlock:^(PYSearchViewController *searchViewController, UISearchBar *searchBar, NSString *searchText) {
+        // 开始搜索执行以下代码
+        // 如：跳转到指定控制器
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ILDreamSearchResultViewController *searchResultVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ILDreamSearchResultViewController"];
+            searchResultVC.searchText = searchText;
+            [searchViewController.navigationController pushViewController:searchResultVC animated:YES];
+        });
+    }];
+    
+    searchViewController.searchSuggestionHidden = YES;
+    searchViewController.hotSearchStyle = PYHotSearchStyleColorfulTag; // 热门搜索风格为默认
+    searchViewController.searchHistoryStyle = PYHotSearchStyleColorfulTag; // 搜索历史风格根据选择
+    // 4. 设置代理
+    searchViewController.delegate = self;
+    // 5. 跳转到搜索控制器
+    [self.navigationController pushViewController:searchViewController animated:YES];
 }
 
 @end
