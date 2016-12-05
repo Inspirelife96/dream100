@@ -17,7 +17,7 @@
 
 #import "ILUserDreamViewController.h"
 
-@interface ILFollowMessageViewController () <UITableViewDataSource, UITableViewDelegate, ILUserProfileDelegate>
+@interface ILFollowMessageViewController () <UITableViewDataSource, UITableViewDelegate/*, ILUserProfileDelegate*/>
 
 @property(strong, nonatomic) NSMutableArray *followMessageArray;
 
@@ -56,16 +56,16 @@
     ILFollowMessageCell *messageCell = [tableView dequeueReusableCellWithIdentifier:@"ILFollowMessageCell" forIndexPath:indexPath];
     messageCell.userObject = _followMessageArray[indexPath.row][@"user"];
     messageCell.followDate = _followMessageArray[indexPath.row][@"createdAt"];
-    messageCell.delegate = self;
+    //messageCell.delegate = self;
     messageCell.userButton.tag = indexPath.row;
     return messageCell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    ILPrivateMessageViewController *privateMessageVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ILPrivateMessageViewController"];
-//    privateMessageVC.userObject = _followMessageArray[indexPath.row][@"followee"];
-//    [self.navigationController pushViewController:privateMessageVC animated:YES];
+    ILUserDreamViewController *userDreamView = [self.storyboard instantiateViewControllerWithIdentifier:@"ILUserDreamViewController"];
+    userDreamView.currentUser = _followMessageArray[indexPath.row][@"user"];
+    [self.navigationController pushViewController:userDreamView animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  {
@@ -160,13 +160,6 @@
             }
         }
     }];
-}
-
-- (void)clickUserProfile:(id)sender {
-    UIButton *selectedButton = (UIButton *)sender;
-    ILUserDreamViewController *userDreamView = [self.storyboard instantiateViewControllerWithIdentifier:@"ILUserDreamViewController"];
-    userDreamView.currentUser = _followMessageArray[selectedButton.tag][@"user"];
-    [self.navigationController pushViewController:userDreamView animated:YES];
 }
 
 @end

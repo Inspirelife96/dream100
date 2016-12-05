@@ -21,14 +21,15 @@
 #import "AVAnonymousUtils.h"
 #import "MyDreamCache.h"
 #import "MyLikeCache.h"
+#import "ILDreamDBManager.h"
 
-@interface CDLoginVC () <CDSNSViewDelegate, UIActionSheetDelegate>
+@interface CDLoginVC () </*CDSNSViewDelegate, */UIActionSheetDelegate>
 
 @property (nonatomic, strong) LZAlertViewHelper *alertViewHelper;
 
 @property (nonatomic, strong) CDEntryActionButton *loginButton;
 @property (nonatomic, strong) CDEntryBottomButton *registerButton;
-@property (nonatomic, strong) CDEntryBottomButton *forgotPasswordButton;
+//@property (nonatomic, strong) CDEntryBottomButton *forgotPasswordButton;
 @property (nonatomic, strong) CDSNSView *snsView;
 
 @end
@@ -44,12 +45,12 @@
     self.usernameField.placeholder = @"用户名";
     [self.view addSubview:self.loginButton];
     [self.view addSubview:self.registerButton];
-    [self.view addSubview:self.forgotPasswordButton];
+    //[self.view addSubview:self.forgotPasswordButton];
     
     self.edgesForExtendedLayout = UIRectEdgeTop;
     self.navigationItem.leftBarButtonItem = self.cancelBarButtonItem;
     [self.view addSubview:self.registerButton];
-    self.title = @"注册";
+    self.title = @"登陆";
     
     self.navigationController.navigationBar.barTintColor = FlatGray;
 
@@ -83,7 +84,7 @@
 
 - (UIButton *)registerButton {
     if (_registerButton == nil) {
-        _registerButton = [[CDEntryBottomButton alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame) - kEntryVCTextFieldHeight, CGRectGetWidth(self.view.frame) / 2, kEntryVCTextFieldHeight)];
+        _registerButton = [[CDEntryBottomButton alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame) - kEntryVCTextFieldHeight, CGRectGetWidth(self.view.frame), kEntryVCTextFieldHeight)];
         [_registerButton setTitle:@"注册账号" forState:UIControlStateNormal];
         [_registerButton addTarget:self action:@selector(toRegister:) forControlEvents:UIControlEventTouchUpInside];
         _registerButton.alpha = 0.7;
@@ -91,14 +92,14 @@
     return _registerButton;
 }
 
-- (UIButton *)forgotPasswordButton {
-    if (_forgotPasswordButton == nil) {
-        _forgotPasswordButton = [[CDEntryBottomButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.view.frame) / 2, CGRectGetHeight(self.view.frame) - kEntryVCTextFieldHeight, CGRectGetWidth(self.view.frame) / 2, kEntryVCTextFieldHeight)];
-        [_forgotPasswordButton setTitle:@"找回密码" forState:UIControlStateNormal];
-        [_forgotPasswordButton addTarget:self action:@selector(toFindPassword:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _forgotPasswordButton;
-}
+//- (UIButton *)forgotPasswordButton {
+//    if (_forgotPasswordButton == nil) {
+//        _forgotPasswordButton = [[CDEntryBottomButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.view.frame) / 2, CGRectGetHeight(self.view.frame) - kEntryVCTextFieldHeight, CGRectGetWidth(self.view.frame) / 2, kEntryVCTextFieldHeight)];
+//        [_forgotPasswordButton setTitle:@"找回密码" forState:UIControlStateNormal];
+//        [_forgotPasswordButton addTarget:self action:@selector(toFindPassword:) forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    return _forgotPasswordButton;
+//}
 
 - (LZAlertViewHelper *)alertViewHelper {
     if (_alertViewHelper == nil) {
@@ -134,6 +135,9 @@
             AVInstallation *installation = [AVInstallation currentInstallation];
             [installation setObject:[AVUser currentUser] forKey:@"owner"];
             [installation saveInBackground];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILUserLoginNotification" object:nil];
+            
+            [ILDreamDBManager fetchBadge];
         }
     }];
 }

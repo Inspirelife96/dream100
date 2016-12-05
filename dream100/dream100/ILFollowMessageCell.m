@@ -24,6 +24,11 @@
 }
 
 - (void)setUserObject:(AVUser *)userObject {
+    _profileImageView.layer.masksToBounds = YES;
+    _profileImageView.layer.cornerRadius = 22.0f;
+    _profileImageView.layer.borderWidth = 3.0f;
+    _profileImageView.layer.borderColor = FlatLime.CGColor;
+    
     if (userObject) {
         [[CDUserManager manager] getAvatarImageOfUser:userObject block:^(UIImage *image) {
             _profileImageView.image = image;

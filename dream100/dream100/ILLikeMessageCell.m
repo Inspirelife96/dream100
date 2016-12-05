@@ -36,7 +36,7 @@
         //
         if ([string isEqualToString:userString]) {
             if([self.delegate respondsToSelector:@selector(clickUser:)]) {
-                [self.delegate clickJourney:_likeObject[@"fromUser"]];
+                [self.delegate clickUser:_likeObject[@"fromUser"]];
             }
         } else if ([string isEqualToString:journeyString]) {
             if([self.delegate respondsToSelector:@selector(clickJourney:)]) {

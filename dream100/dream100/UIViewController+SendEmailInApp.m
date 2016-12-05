@@ -31,7 +31,7 @@
 {
     MFMailComposeViewController *mailPicker = [[MFMailComposeViewController alloc] init];
     mailPicker.mailComposeDelegate = self;
-    [mailPicker.navigationBar setTintColor:[UIColor whiteColor]];
+    //[mailPicker.navigationBar setTintColor:[UIColor whiteColor]];
     
     //设置主题
     [mailPicker setSubject: [emailContent objectForKey:@"subject"]];
@@ -48,27 +48,20 @@
     //关闭邮件发送窗口
     [self dismissViewControllerAnimated:YES completion:nil];
     
-    NSString *msg;
     switch (result) {
         case MFMailComposeResultCancelled:
-            msg = @"用户取消编辑邮件";
             break;
         case MFMailComposeResultSaved:
-            msg = @"用户成功保存邮件";
             break;
         case MFMailComposeResultSent:
-            msg = @"邮件已放在放到队列中，正在发送...";
-            [self presentAlertTitle:@"发送中..." message:msg];
+            [self presentAlertTitle:@"发送中..." message:@"邮件已放在放到队列中，正在发送..."];
             break;
         case MFMailComposeResultFailed:
-            msg = @"保存或者发送邮件失败";
-            [self presentAlertTitle:@"邮件发送失败" message:msg];
+            [self presentAlertTitle:@"邮件发送失败" message:@"保存或者发送邮件失败"];
             break;
         default:
-            msg = @"";
             break;
     }
 }
-
 
 @end

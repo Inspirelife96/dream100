@@ -17,7 +17,6 @@
 #import "UserInfoView.h"
 #import "UserProfileCell.h"
 
-#import "ILJourneyPublishController.h"
 #import "ILCommentViewController.h"
 #import "ILUserDreamViewController.h"
 #import "ILDreamDBManager.h"
@@ -110,20 +109,10 @@
     }
     
     [_journeyTableView reloadData];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamDBOperationError:) name:@"ILDreamDBOperationErrorNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamUIUpdate:) name:@"ILDreamUIUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(journeyLikeUpdate:) name:@"ILJourneyLikeUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(journeyCommentUpdate:) name:@"ILJourneyCommentUpdateNotification" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamDBOperationErrorNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamUIUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyLikeUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyCommentUpdateNotification" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -159,16 +148,13 @@
             userProfileCell.selectionStyle = UITableViewCellSelectionStyleNone;
             userProfileCell.delegate = self;
             userProfileCell.userObject = _joinedUserArray[indexPath.row][@"user"];
-            
-//            TTTTimeIntervalFormatter *timeFormater = [[TTTTimeIntervalFormatter alloc] init];
-//            NSString *timeCreated = [timeFormater stringForTimeIntervalFromDate:[NSDate date] toDate:_joinedUserArray[indexPath.row][@"createdAt"]];
-//            userProfileCell.userProfileDefaultView.mottoLabel.text = [NSString stringWithFormat:@"%@许下这个个梦想", timeCreated];
+    
             return userProfileCell;
         } else {
             ILJourneyCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ILJourneyCell" forIndexPath:indexPath];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.journeyObject = _journeyArray[indexPath.row];
             cell.delegate = self;
+            cell.journeyObject = _journeyArray[indexPath.row];
             cell.likeButton.tag = indexPath.row;
             cell.commentButton.tag = indexPath.row;
             return cell;
@@ -305,24 +291,20 @@
 }
 
 #pragma mark Notification Handlers
-- (void)dreamDBOperationError:(id)sender {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [self alertError:nil];
-}
 
 - (void)dreamUIUpdate:(id)sender {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [self hideProgress];
     _dreamCell.dreamObject = _dreamObject;
     [self refreshData];
 }
 
 - (void)journeyLikeUpdate:(NSNotification*)notification {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [self hideProgress];
     [_journeyTableView reloadData];
 }
 
 - (void)journeyCommentUpdate:(NSNotification*)notification {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [self hideProgress];
     self.inputTextView.text = @"";
     [self updateInputViewUI];
     [_journeyTableView reloadData];
@@ -346,6 +328,7 @@
         query = [AVQuery queryWithClassName:@"Journey"];
         [query whereKey:@"dream" equalTo:_dreamObject];
         [query includeKey:@"user"];
+        [query includeKey:@"dream"];
         [query addDescendingOrder:@"commentNumber"];
         [query addDescendingOrder:@"likeNumber"];
         [query addDescendingOrder:@"createdAt"];
@@ -356,6 +339,7 @@
         query = [AVQuery queryWithClassName:@"Journey"];
         [query whereKey:@"dream" equalTo:_dreamObject];
         [query includeKey:@"user"];
+        [query includeKey:@"dream"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
     } else if (_journeyArray == _myJourneyArray) {
@@ -365,6 +349,7 @@
         [query whereKey:@"dream" equalTo:_dreamObject];
         [query whereKey:@"user" equalTo:[AVUser currentUser]];
         [query includeKey:@"user"];
+        [query includeKey:@"dream"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
     } else {
@@ -373,6 +358,7 @@
         query = [AVQuery queryWithClassName:@"DreamFollow"];
         [query whereKey:@"dream" equalTo:_dreamObject];
         [query includeKey:@"user"];
+        [query includeKey:@"dream"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
     }
@@ -428,6 +414,7 @@
             [query whereKey:@"createdAt" lessThan:lastObject[@"createdAt"]];
         }
         [query includeKey:@"user"];
+        [query includeKey:@"dream"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
 
@@ -442,6 +429,7 @@
             [query whereKey:@"createdAt" lessThan:lastObject[@"createdAt"]];
         }
         [query includeKey:@"user"];
+        [query includeKey:@"dream"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
     } else {
@@ -454,6 +442,7 @@
             [query whereKey:@"createdAt" lessThan:lastObject[@"createdAt"]];
         }
         [query includeKey:@"user"];
+        [query includeKey:@"dream"];
         [query addDescendingOrder:@"createdAt"];
         [query setLimit:10];
     }

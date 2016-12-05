@@ -12,12 +12,9 @@
 #import "ILDreamModel.h"
 #import "ILJourneyModel.h"
 
-
 @implementation ILDreamDBManager
 
 + (void)createDream:(ILDreamModel *)dreamModel {
-    NSLog(@"创建Dream...");
-    
     dispatch_queue_t dispatchQueue = dispatch_queue_create("inspirelife.queue.save.dream", DISPATCH_QUEUE_CONCURRENT);
     dispatch_group_t dispatchGroup = dispatch_group_create();
     
@@ -51,7 +48,7 @@
             
             [dreamObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (error) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+                    [ILDreamDBManager postNotificationWithError:error];
                 }else {
                     [ILDreamDBManager joinDream:dreamObject];
                 }
@@ -67,7 +64,7 @@
     [dreamFollowObject setObject:@"追梦" forKey:@"status"];
     [dreamFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
-            //
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
             [[MyDreamCache sharedInstance] addDream:dreamObject[@"objectId"]];
             [ILDreamDBManager addStandardJourney:ILJourneyTypeJoin toDream:dreamObject];
@@ -110,9 +107,10 @@
     [journey setObject:@(YES) forKey:@"isOpen"];
     [journey saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamErrorNotification" object:nil];
+            [ILDreamDBManager postNotificationWithError:error];
         }else {
             [ILDreamDBManager updateJourneys:dreamObject];
+            [ILDreamDBManager updateJourneyCount:[AVUser currentUser]];
         }
     }];
 }
@@ -148,9 +146,10 @@
             
             [journey saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (error) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamErrorNotification" object:nil];
+                    [ILDreamDBManager postNotificationWithError:error];
                 }else {
                     [ILDreamDBManager updateJourneys:dreamObject];
+                    [ILDreamDBManager updateJourneyCount:[AVUser currentUser]];
                 }
             }];
         });
@@ -163,11 +162,11 @@
     [query whereKey:@"user" equalTo:[AVUser currentUser]];
     [query getFirstObjectInBackgroundWithBlock:^(AVObject *object, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamErrorNotification" object:nil];
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
             [object deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (error) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamErrorNotification" object:nil];
+                    [ILDreamDBManager postNotificationWithError:error];
                 } else {
                     [[MyDreamCache sharedInstance] removeDream:dreamObject[@"objectId"]];
                     [ILDreamDBManager addStandardJourney:ILJourneyTypeQuit toDream:dreamObject];
@@ -184,15 +183,78 @@
     [followCountQuery whereKey:@"user" equalTo:userObject];
     [followCountQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
         if (error) {
-            //
+           //[ILDreamDBManager postNotificationWithError:error];
         } else {
             AVQuery *dreamCountQuery = [AVQuery queryWithClassName:@"DreamCount"];
             [dreamCountQuery whereKey:@"user" equalTo:userObject];
             [dreamCountQuery getFirstObjectInBackgroundWithBlock:^(AVObject *object, NSError *error) {
                 if (error) {
-                    //
+                    //[ILDreamDBManager postNotificationWithError:error];
                 } else {
-                    [object setObject:@(number) forKey:@"count"];
+                    [object setObject:@(number) forKey:@"dreamCount"];
+                    [object saveEventually];
+                }
+            }];
+        }
+    }];
+}
+
++ (void)updateCommentCount:(AVUser *)userObject {
+    AVQuery *followCountQuery = [AVQuery queryWithClassName:@"Comment"];
+    [followCountQuery whereKey:@"fromUser" equalTo:userObject];
+    [followCountQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
+        if (error) {
+            //[ILDreamDBManager postNotificationWithError:error];
+        } else {
+            AVQuery *dreamCountQuery = [AVQuery queryWithClassName:@"DreamCount"];
+            [dreamCountQuery whereKey:@"user" equalTo:userObject];
+            [dreamCountQuery getFirstObjectInBackgroundWithBlock:^(AVObject *object, NSError *error) {
+                if (error) {
+                    //[ILDreamDBManager postNotificationWithError:error];
+                } else {
+                    [object setObject:@(number) forKey:@"commentCount"];
+                    [object saveEventually];
+                }
+            }];
+        }
+    }];
+}
+
++ (void)updateLikeCount:(AVUser *)userObject {
+    AVQuery *followCountQuery = [AVQuery queryWithClassName:@"Like"];
+    [followCountQuery whereKey:@"fromUser" equalTo:userObject];
+    [followCountQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
+        if (error) {
+            //[ILDreamDBManager postNotificationWithError:error];
+        } else {
+            AVQuery *dreamCountQuery = [AVQuery queryWithClassName:@"DreamCount"];
+            [dreamCountQuery whereKey:@"user" equalTo:userObject];
+            [dreamCountQuery getFirstObjectInBackgroundWithBlock:^(AVObject *object, NSError *error) {
+                if (error) {
+                    //[ILDreamDBManager postNotificationWithError:error];
+                } else {
+                    [object setObject:@(number) forKey:@"likeCount"];
+                    [object saveEventually];
+                }
+            }];
+        }
+    }];
+}
+
++ (void)updateJourneyCount:(AVUser *)userObject {
+    AVQuery *followCountQuery = [AVQuery queryWithClassName:@"Journey"];
+    [followCountQuery whereKey:@"user" equalTo:userObject];
+    [followCountQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
+        if (error) {
+            //[ILDreamDBManager postNotificationWithError:error];
+        } else {
+            AVQuery *dreamCountQuery = [AVQuery queryWithClassName:@"DreamCount"];
+            [dreamCountQuery whereKey:@"user" equalTo:userObject];
+            [dreamCountQuery getFirstObjectInBackgroundWithBlock:^(AVObject *object, NSError *error) {
+                if (error) {
+                    //[ILDreamDBManager postNotificationWithError:error];
+                } else {
+                    [object setObject:@(number) forKey:@"journeyCount"];
                     [object saveEventually];
                 }
             }];
@@ -205,7 +267,7 @@
     [followQuery whereKey:@"dream" equalTo:dreamObject];
     [followQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
         if (error) {
-            //
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
             [dreamObject setObject:@(number) forKey:@"followers"];
             [dreamObject saveEventually];
@@ -218,12 +280,12 @@
     [journeyQuery whereKey:@"dream" equalTo:dreamObject];
     [journeyQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamErrorNotification" object:nil];
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
             [dreamObject setObject:@(number) forKey:@"journeys"];
             [dreamObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (error) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+                    [ILDreamDBManager postNotificationWithError:error];
                 } else {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamUIUpdateNotification" object:nil];
                 }
@@ -237,12 +299,12 @@
     [followQuery whereKey:@"journey" equalTo:journeyObject];
     [followQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+            //[ILDreamDBManager postNotificationWithError:error];
         } else {
             [journeyObject setObject:@(number) forKey:@"likeNumber"];
             [journeyObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if(error) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+                    //[ILDreamDBManager postNotificationWithError:error];
                 } else {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"ILJourneyLikeUpdateNotification" object:nil];
                 }
@@ -256,12 +318,12 @@
     [followQuery whereKey:@"journey" equalTo:journeyObject];
     [followQuery countObjectsInBackgroundWithBlock:^(NSInteger number, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
             [journeyObject setObject:@(number) forKey:@"commentNumber"];
             [journeyObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (error) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+                    [ILDreamDBManager postNotificationWithError:error];
                 } else {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"ILJourneyCommentUpdateNotification" object:nil];                    
                 }
@@ -277,11 +339,12 @@
     [likeObject setObject:journeyObject forKey:@"journey"];
     [likeObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
-            [self pushMessage:@"like" ForJourney:journeyObject];
+            [self pushMessage:@"like" toUser:journeyObject[@"user"] ForJourney:journeyObject];
             [[MyLikeCache sharedInstance] addLike:journeyObject[@"objectId"]];
             [ILDreamDBManager updateLikeNumber:journeyObject];
+            [ILDreamDBManager updateLikeCount:[AVUser currentUser]];
         }
     }];
 }
@@ -293,11 +356,12 @@
     
     [query getFirstObjectInBackgroundWithBlock:^(AVObject *object, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
             [object deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 [[MyLikeCache sharedInstance] removeLike:journeyObject[@"objectId"]];
                 [ILDreamDBManager updateLikeNumber:journeyObject];
+                [ILDreamDBManager updateLikeCount:[AVUser currentUser]];
             }];
         }
     }];
@@ -311,10 +375,11 @@
     [object setObject:toUser forKey:@"toUser"];
     [object saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:nil];
+            [ILDreamDBManager postNotificationWithError:error];
         } else {
-            [self pushMessage:@"comment" ForJourney:journeyObject];
+            [self pushMessage:@"comment" toUser:toUser ForJourney:journeyObject];
             [ILDreamDBManager updateCommentNumber:journeyObject];
+            [ILDreamDBManager updateCommentCount:[AVUser currentUser]];
         }
     }];
 }
@@ -327,9 +392,13 @@
     [tipOffsObject saveEventually];
 }
 
-+ (void)pushMessage:(NSString*)messageType ForJourney:(AVObject*)journeyObject {
++ (void)pushMessage:(NSString*)messageType toUser:(AVUser *)userObject ForJourney:(AVObject*)journeyObject {
     AVQuery *pushQuery = [AVInstallation query];
-    [pushQuery whereKey:@"owner" equalTo:journeyObject[@"user"]];
+    if (userObject == nil) {
+        [pushQuery whereKey:@"owner" equalTo:journeyObject[@"user"]];
+    } else {
+        [pushQuery whereKey:@"owner" equalTo:userObject];
+    }
     
     AVObject *dreamObject = journeyObject[@"dream"];
     
@@ -359,7 +428,7 @@
                   @"journeyId": journeyId,
                   };
     } else {
-        alertMessage = [NSString stringWithFormat:@"%@在您在梦想[%@]发布的心路历程[%@]上添加了一条评论", [AVUser currentUser].username,dreamContent, journeyContent];
+        alertMessage = [NSString stringWithFormat:@"%@在梦想[%@]的心路历程[%@]中添加了一条评论", [AVUser currentUser].username,dreamContent, journeyContent];
         data = @{
                   @"alert": alertMessage,
                   @"badge": @"Increment",
@@ -375,6 +444,12 @@
     [push setQuery:pushQuery];
     [push setData:data];
     [push sendPushInBackground];
+    
+    if ([messageType isEqualToString:@"like"]) {
+        [ILDreamDBManager updateBadge:1 forUser:journeyObject[@"user"]];
+    } else {
+        [ILDreamDBManager updateBadge:0 forUser:journeyObject[@"user"]];
+    }
 }
 
 + (void)AddMessageListFrom:(AVUser *)fromUser to:(AVUser *)toUser message:(NSString *)messageString {
@@ -383,8 +458,8 @@
     [queryFrom whereKey:@"toUser" equalTo:toUser];
     
     AVQuery *queryTo = [AVQuery queryWithClassName:@"MessageList"];
-    [queryFrom whereKey:@"fromUser" equalTo:toUser];
-    [queryFrom whereKey:@"toUser" equalTo:fromUser];
+    [queryTo whereKey:@"fromUser" equalTo:toUser];
+    [queryTo whereKey:@"toUser" equalTo:fromUser];
     
     AVQuery *query = [AVQuery orQueryWithSubqueries:@[queryFrom, queryTo]];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
@@ -395,6 +470,8 @@
                 [messageListObject setObject:toUser forKey:@"toUser"];
                 [messageListObject setObject:messageString forKey:@"message"];
                 [messageListObject saveEventually];
+            } else {
+                [ILDreamDBManager postNotificationWithError:error];
             }
         } else {
             if (objects.count > 0) {
@@ -413,6 +490,162 @@
     }];
 }
 
++ (void)pushMessage:(NSString *)message toUser:(AVUser *)toUser {
+    AVQuery *pushQuery = [AVInstallation query];
+    [pushQuery whereKey:@"owner" equalTo:toUser];
+    
+    NSString *alertMessage = [NSString stringWithFormat:@"%@：%@", [AVUser currentUser].username, message];
+    
+    NSDictionary *data = @{
+             @"alert": alertMessage,
+             @"badge": @"Increment",
+             @"sound": @"cheering.caf",
+             };
+    
+    AVPush *push = [[AVPush alloc] init];
+    [push setQuery:pushQuery];
+    [push setData:data];
+    [push sendPushInBackground];
+    
+    [ILDreamDBManager updateBadge:2 forUser:toUser];
+}
+
++ (void)updateBadge:(NSInteger)type forUser:(AVUser *)userObject {
+    AVQuery *query = [AVQuery queryWithClassName:@"BadgeCount"];
+    [query whereKey:@"user" equalTo:userObject];
+    
+    [query getFirstObjectInBackgroundWithBlock:^(AVObject * _Nullable object, NSError * _Nullable error) {
+        if (error) {
+            if (error.code == 101) {
+                AVObject *badgeCountObject = [AVObject objectWithClassName:@"BadgeCount"];
+                [badgeCountObject setObject:[AVUser currentUser] forKey:@"user"];
+                [badgeCountObject setObject:@(0) forKey:@"commentBadge"];
+                [badgeCountObject setObject:@(0) forKey:@"likeBadge"];
+                [badgeCountObject setObject:@(0) forKey:@"messageBadge"];
+                [badgeCountObject setObject:@(0) forKey:@"followerBadge"];
+                [badgeCountObject saveEventually];
+            } else {
+                //[ILDreamDBManager postNotificationWithError:error];
+            }
+        } else {
+            if (type == 0) {
+                //评论
+                NSInteger commentBadge = [object[@"commentBadge"] integerValue];
+                [object setObject:@(commentBadge + 1) forKey:@"commentBadge"];
+                [object saveInBackground];
+            } else if (type == 1) {
+                //喜欢
+                NSInteger likeBadge = [object[@"likeBadge"] integerValue];
+                [object setObject:@(likeBadge + 1) forKey:@"likeBadge"];
+                [object saveInBackground];
+            } else if (type == 2) {
+                //信件
+                NSInteger messageBadge = [object[@"messageBadge"] integerValue];
+                [object setObject:@(messageBadge + 1) forKey:@"messageBadge"];
+                [object saveInBackground];
+            } else if (type == 3) {
+                //关注
+                NSInteger followerBadge = [object[@"followerBadge"] integerValue];
+                [object setObject:@(followerBadge + 1) forKey:@"followerBadge"];
+                [object saveInBackground];
+            }
+        }
+    }];
+}
+
++ (void)resetBadge:(NSInteger)type  {
+    AVQuery *query = [AVQuery queryWithClassName:@"BadgeCount"];
+    [query whereKey:@"user" equalTo:[AVUser currentUser]];
+    
+    [query getFirstObjectInBackgroundWithBlock:^(AVObject * _Nullable object, NSError * _Nullable error) {
+        if (error) {
+            //[ILDreamDBManager postNotificationWithError:error];
+        } else {
+            NSNumber *commentNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"commentBadge"];
+            NSNumber *likeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"likeBadge"];
+            NSNumber *messageNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"messageBadge"];
+            NSNumber *followerNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"followerBadge"];
+            NSInteger badgeNumber = [commentNumber integerValue]
+            + [likeNumber integerValue]
+            + [messageNumber integerValue]
+            + [followerNumber integerValue];
+
+            if (type == 0) {
+                //评论
+                NSInteger commentBadge = [object[@"commentBadge"] integerValue];
+                badgeNumber = badgeNumber - commentBadge;
+                [object setObject:@(0) forKey:@"commentBadge"];
+                [[NSUserDefaults standardUserDefaults] setObject:@(0) forKey:@"commentBadge"];
+            } else if (type == 1) {
+                //喜欢
+                NSInteger likeBadge = [object[@"likeBadge"] integerValue];
+                badgeNumber = badgeNumber - likeBadge;
+                [object setObject:@(0) forKey:@"likeBadge"];
+                [[NSUserDefaults standardUserDefaults] setObject:@(0) forKey:@"likeBadge"];
+            } else if (type == 2) {
+                //信件
+                NSInteger messageBadge = [object[@"messageBadge"] integerValue];
+                badgeNumber = badgeNumber - messageBadge;
+                [object setObject:@(0) forKey:@"messageBadge"];
+                [[NSUserDefaults standardUserDefaults] setObject:@(0) forKey:@"messageBadge"];
+            } else if (type == 3) {
+                //关注
+                NSInteger followerBadge = [object[@"followerBadge"] integerValue];
+                badgeNumber = badgeNumber - followerBadge;
+                [object setObject:@(0) forKey:@"followerBadge"];
+                [[NSUserDefaults standardUserDefaults] setObject:@(0) forKey:@"followerBadge"];
+            }
+            
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [object saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                if (error) {
+                    [ILDreamDBManager postNotificationWithError:error];
+                } else {
+                    [ILDreamDBManager resetInstallationBadge:badgeNumber];
+                }
+            }];
+        }
+    }];
+}
+
++ (void)resetInstallationBadge:(NSInteger)installationNumber {
+    NSInteger badgeNumber = installationNumber;
+    if (badgeNumber < 0) {
+        badgeNumber = 0;
+    }
+    [[AVInstallation currentInstallation] setObject:@(badgeNumber) forKey:@"badge"];
+    [[AVInstallation currentInstallation] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        //[[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
+        if (error) {
+            
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILBadgeUpdateNotification" object:nil];
+        }
+    }];
+}
+
++ (void)fetchBadge  {
+    AVQuery *query = [AVQuery queryWithClassName:@"BadgeCount"];
+    [query whereKey:@"user" equalTo:[AVUser currentUser]];
+    
+    [query getFirstObjectInBackgroundWithBlock:^(AVObject * _Nullable object, NSError * _Nullable error) {
+        if (error) {
+            //
+        } else {
+            [[NSUserDefaults standardUserDefaults] setObject:object[@"commentBadge"] forKey:@"commentBadge"];
+            [[NSUserDefaults standardUserDefaults] setObject:object[@"likeBadge"] forKey:@"likeBadge"];
+            [[NSUserDefaults standardUserDefaults] setObject:object[@"messageBadge"] forKey:@"messageBadge"];
+            [[NSUserDefaults standardUserDefaults] setObject:object[@"followerBadge"] forKey:@"followerBadge"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILBadgeUpdateNotification" object:nil];
+        }
+    }];
+}
+
++ (void)postNotificationWithError:(NSError *)error {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ILDreamDBOperationErrorNotification" object:@[error]];
+}
 
 
 @end

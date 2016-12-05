@@ -149,4 +149,8 @@
     [_commentInputView setUserInteractionEnabled:NO];
 }
 
+- (void)sendComment {
+    // do nothing here, overwrite in sub class
+}
+
 @end

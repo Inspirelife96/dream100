@@ -20,6 +20,7 @@
 
 #import "UIViewController+AlertError.h"
 #import "ILDreamSearchResultViewController.h"
+#import "UIViewController+Login.h"
 
 @interface ILDiscoveryViewController () <BHInfiniteScrollViewDelegate, ILDiscoverySectionHeaderCellDelegate, PYSearchViewControllerDelegate>
 
@@ -43,11 +44,7 @@
     
     UIBarButtonItem *searchFriendBarButton = [[UIBarButtonItem alloc] initWithTitle:@"搜索" style:UIBarButtonItemStylePlain target:self action:@selector(clickSearchBarButton:)];
     self.navigationItem.rightBarButtonItem = searchFriendBarButton;
-
-    [self initTableViewDataAndRefresh];
-}
-
-- (void)viewWillLayoutSubviews {
+    
     [self.headerView setNeedsLayout];
     [self.headerView layoutIfNeeded];
     
@@ -76,6 +73,8 @@
     [self.headerView addSubview:infinitePageView];
     
     self.navigationItem.title = @"发现";
+
+    [self initTableViewDataAndRefresh];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -122,6 +121,10 @@
 }
 
 - (void)selectFollowButton:(id)sender {
+    if (![self isLogin]) {
+        return;
+    }
+    
     self.dreamObjectArray = _followObjectArray;
     [self.dreamTableView reloadData];
     [self refreshData];
@@ -151,8 +154,9 @@
         dreamArray = _followObjectArray;
         
         innerQuery = [AVUser followeeQuery:[AVUser currentUser].objectId];
-        query = [AVQuery queryWithClassName:@"Dream"];
+        query = [AVQuery queryWithClassName:@"DreamFollow"];
         [query whereKey:@"user" matchesKey:@"followee" inQuery:innerQuery];
+        [query includeKey:@"dream"];
         [query orderByDescending:@"createdAt"];
         [query setLimit:10];
     }
@@ -165,7 +169,13 @@
         } else {
             [dreamArray removeAllObjects];
             if (objects.count > 0) {
-                [dreamArray addObjectsFromArray:objects];
+                if (dreamArray == _followObjectArray) {
+                    [objects enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        [dreamArray addObject:obj[@"dream"]];
+                    }];
+                } else {
+                    [dreamArray addObjectsFromArray:objects];
+                }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [tableView reloadData];
                     [tableView.mj_header endRefreshing];
@@ -208,12 +218,13 @@
         dreamArray = _followObjectArray;
         
         innerQuery = [AVUser followeeQuery:[AVUser currentUser].objectId];
-        query = [AVQuery queryWithClassName:@"Dream"];
+        query = [AVQuery queryWithClassName:@"DreamFollow"];
         if (dreamArray.count > 0) {
             AVObject *lastObject = dreamArray[dreamArray.count - 1];
             [query whereKey:@"createdAt" lessThan:lastObject[@"createdAt"]];
         }
         [query orderByDescending:@"createdAt"];
+        [query includeKey:@"dream"];
         [query setLimit:10];
         [query whereKey:@"user" matchesKey:@"followee" inQuery:innerQuery];
     }
@@ -225,7 +236,13 @@
             [self alertError:error];
         } else {
             if (objects.count > 0) {
-                [dreamArray addObjectsFromArray:objects];
+                if (dreamArray == _followObjectArray) {
+                    [objects enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        [dreamArray addObject:obj[@"dream"]];
+                    }];
+                } else {
+                    [dreamArray addObjectsFromArray:objects];
+                }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [tableView reloadData];
                     [tableView.mj_footer endRefreshing];

@@ -11,5 +11,6 @@
 @interface UIViewController (DreamAction)
 
 - (void)showActionForDream:(AVObject *)dreamObject onView:(UIView *)sender;
+- (void)tipoffs:(UIView *)sender forObject:(AVObject *)object;
 
 @end

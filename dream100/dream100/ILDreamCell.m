@@ -35,8 +35,9 @@
     _postContentView.contentString = dreamObject[@"content"];
     _postContentView.imageArray = dreamObject[@"imageFiles"];
     
-    TTTTimeIntervalFormatter *timerFormatter = [[TTTTimeIntervalFormatter alloc] init];
-    _timeLabel.text = [timerFormatter stringForTimeIntervalFromDate:[NSDate date] toDate:dreamObject[@"createdAt"]];
+//    TTTTimeIntervalFormatter *timerFormatter = [[TTTTimeIntervalFormatter alloc] init];
+//    _timeLabel.text = [timerFormatter stringForTimeIntervalFromDate:[NSDate date] toDate:dreamObject[@"createdAt"]];
+    _timeLabel.text = @"";
     
     _dreamStatusLabel.text = [NSString stringWithFormat:@"共梦者(%ld) ｜ 心路历程(%ld)", (long)[_dreamObject[@"followers"] integerValue], (long)[_dreamObject[@"journeys"] integerValue]];
     

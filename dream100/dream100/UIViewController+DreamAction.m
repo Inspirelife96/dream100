@@ -59,7 +59,7 @@
     }]];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"举报" style:TYAlertActionStyleDestructive handler:^(TYAlertAction *action) {
-         [self tipoffs:sender forDream:dreamObject];
+         [self tipoffs:sender forObject:dreamObject];
     }]];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"取消" style:TYAlertActionStyleCancel handler:^(TYAlertAction *action) {
@@ -172,23 +172,23 @@
 //    [JMActionSheet showActionSheetDescription:description inViewController:self.tabBarController fromView:sender permittedArrowDirections:UIPopoverArrowDirectionAny];
 }
 
-- (void)tipoffs:(UIView *)sender forDream:(AVObject *)dreamObject {
+- (void)tipoffs:(UIView *)sender forObject:(AVObject *)object {
     TYAlertView *alertView = [TYAlertView alertViewWithTitle:@"请选择举报的原因" message:nil];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"色情低俗" style:TYAlertActionStyleDestructive handler:^(TYAlertAction *action) {
-        [self submitTipoffs:@"色情低俗" forDream:dreamObject];
+        [self submitTipoffs:@"色情低俗" forObject:object];
     }]];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"广告，谣言，政治敏感" style:TYAlertActionStyleDestructive handler:^(TYAlertAction *action) {
-        [self submitTipoffs:@"广告，谣言，政治敏感" forDream:dreamObject];
+        [self submitTipoffs:@"广告，谣言，政治敏感" forObject:object];
     }]];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"主题不相关" style:TYAlertActionStyleDestructive handler:^(TYAlertAction *action) {
-        [self submitTipoffs:@"主题不相关" forDream:dreamObject];
+        [self submitTipoffs:@"主题不相关" forObject:object];
     }]];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"其它" style:TYAlertActionStyleDestructive handler:^(TYAlertAction *action) {
-        [self submitTipoffs:@"其它" forDream:dreamObject];
+        [self submitTipoffs:@"其它" forObject:object];
     }]];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"取消" style:TYAlertActionStyleCancel handler:^(TYAlertAction *action) {
@@ -199,12 +199,20 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)submitTipoffs:(NSString *)tipoffsString forDream:(AVObject *)dreamObject {
-    AVObject *object = [AVObject objectWithClassName:@"Tipoffs"];
-    [object setObject:[AVUser currentUser] forKey:@"user"];
-    [object setObject:dreamObject forKey:@"dream"];
-    
-    [object saveEventually];
+- (void)submitTipoffs:(NSString *)tipoffsString forObject:(AVObject *)tipsOffobject {
+    if ([tipsOffobject.className isEqualToString:@"Dream"]) {
+        AVObject *object = [AVObject objectWithClassName:@"Tipoffs"];
+        [object setObject:[AVUser currentUser] forKey:@"user"];
+        [object setObject:tipsOffobject forKey:@"dream"];
+        
+        [object saveEventually];
+    } else {
+        AVObject *object = [AVObject objectWithClassName:@"TipoffsJourney"];
+        [object setObject:[AVUser currentUser] forKey:@"user"];
+        [object setObject:tipsOffobject forKey:@"journey"];
+        
+        [object saveEventually];
+    }
 }
 
 @end

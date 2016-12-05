@@ -12,7 +12,6 @@
 
 - (void)followOrUnfollow:(id)sender;
 - (void)sendMessage:(id)sender;
-- (void)filter:(NSInteger)dreamCategory;
 
 @end
 

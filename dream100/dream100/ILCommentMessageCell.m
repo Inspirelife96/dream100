@@ -59,7 +59,7 @@
     NSString *dreamString = [ILCommentMessageCell prepareDreamString:commentObject];
     NSString *journeyString = [ILCommentMessageCell prepareJourneyString:commentObject];
     
-    NSString *commentInfoString = [NSString stringWithFormat:@"您在实现梦想《%@》的路途中发表的心路历程《%@》收到一条新的评论", dreamString, journeyString];
+    NSString *commentInfoString = [NSString stringWithFormat:@"您在梦想《%@》的心路历程《%@》中收到一条新的评论", dreamString, journeyString];
     
     UILabel *label = [[UILabel alloc] init];
     
@@ -102,7 +102,7 @@
     NSString *dreamString = [ILCommentMessageCell prepareDreamString:self.commentObject];
     NSString *journeyString = [ILCommentMessageCell prepareJourneyString:self.commentObject];
     
-    NSString *commentInfoString = [NSString stringWithFormat:@"您在实现梦想《%@》的路途中发表的心路历程《%@》收到一条新的评论", dreamString, journeyString];
+    NSString *commentInfoString = [NSString stringWithFormat:@"您在梦想《%@》的心路历程《%@》中收到一条新的评论", dreamString, journeyString];
     NSRange dreamRange = [commentInfoString rangeOfString:dreamString];
     NSRange journeyRange = [commentInfoString rangeOfString:journeyString];
     

@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ILFDBBaseViewController.h"
 
-@interface ILCommentBaseViewController : UIViewController
+@interface ILCommentBaseViewController : ILFDBBaseViewController
 
 @property(weak, nonatomic) IBOutlet UIView *commentInputView;
 @property(weak, nonatomic) IBOutlet UITextView *inputTextView;

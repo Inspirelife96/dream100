@@ -50,9 +50,10 @@
 		2567987F1DC5C910002FB3BD /* UIViewController+Login.m in Sources */ = {isa = PBXBuildFile; fileRef = 2567987E1DC5C910002FB3BD /* UIViewController+Login.m */; };
 		256798821DC6D87C002FB3BD /* ILDreamBasedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 256798811DC6D87C002FB3BD /* ILDreamBasedViewController.m */; };
 		256798851DC6FCBA002FB3BD /* UIViewController+AlertError.m in Sources */ = {isa = PBXBuildFile; fileRef = 256798841DC6FCBA002FB3BD /* UIViewController+AlertError.m */; };
+		2592EC851DE3D9F500B76DC2 /* ILFBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2592EC841DE3D9F500B76DC2 /* ILFBaseViewController.m */; };
+		2592EC881DE3E2F500B76DC2 /* ILFDBBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2592EC871DE3E2F500B76DC2 /* ILFDBBaseViewController.m */; };
+		25A1EE4F1DDC356000667208 /* ILMyDreamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25A1EE4E1DDC356000667208 /* ILMyDreamViewController.m */; };
 		25A32F5C1DA88034005EC757 /* UserInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25A32F5B1DA88034005EC757 /* UserInfoView.m */; };
-		25A32F5F1DA906C5005EC757 /* ILJourneyPublishController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25A32F5E1DA906C5005EC757 /* ILJourneyPublishController.m */; };
-		25A32F611DA90977005EC757 /* ILJourneyPublishController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25A32F601DA90977005EC757 /* ILJourneyPublishController.xib */; };
 		25AF83731DBA2CE200FB057B /* category.plist in Resources */ = {isa = PBXBuildFile; fileRef = 25AF83721DBA2CE200FB057B /* category.plist */; };
 		25AF83771DBA31D200FB057B /* ILDreamInspireDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AF83761DBA31D200FB057B /* ILDreamInspireDetailViewController.m */; };
 		25AF837A1DBA501F00FB057B /* ILDreamInspireSectionHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AF83791DBA501F00FB057B /* ILDreamInspireSectionHeaderCell.m */; };
@@ -303,11 +304,14 @@
 		256798831DC6FCBA002FB3BD /* UIViewController+AlertError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+AlertError.h"; sourceTree = "<group>"; };
 		256798841DC6FCBA002FB3BD /* UIViewController+AlertError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AlertError.m"; sourceTree = "<group>"; };
 		256798901DCAFB90002FB3BD /* dream100.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = dream100.entitlements; sourceTree = "<group>"; };
+		2592EC831DE3D9F500B76DC2 /* ILFBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILFBaseViewController.h; sourceTree = "<group>"; };
+		2592EC841DE3D9F500B76DC2 /* ILFBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILFBaseViewController.m; sourceTree = "<group>"; };
+		2592EC861DE3E2F500B76DC2 /* ILFDBBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILFDBBaseViewController.h; sourceTree = "<group>"; };
+		2592EC871DE3E2F500B76DC2 /* ILFDBBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILFDBBaseViewController.m; sourceTree = "<group>"; };
+		25A1EE4D1DDC356000667208 /* ILMyDreamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILMyDreamViewController.h; sourceTree = "<group>"; };
+		25A1EE4E1DDC356000667208 /* ILMyDreamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILMyDreamViewController.m; sourceTree = "<group>"; };
 		25A32F5A1DA88034005EC757 /* UserInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoView.h; sourceTree = "<group>"; };
 		25A32F5B1DA88034005EC757 /* UserInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoView.m; sourceTree = "<group>"; };
-		25A32F5D1DA906C5005EC757 /* ILJourneyPublishController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILJourneyPublishController.h; sourceTree = "<group>"; };
-		25A32F5E1DA906C5005EC757 /* ILJourneyPublishController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILJourneyPublishController.m; sourceTree = "<group>"; };
-		25A32F601DA90977005EC757 /* ILJourneyPublishController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ILJourneyPublishController.xib; sourceTree = "<group>"; };
 		25AF83721DBA2CE200FB057B /* category.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = category.plist; sourceTree = "<group>"; };
 		25AF83751DBA31D200FB057B /* ILDreamInspireDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILDreamInspireDetailViewController.h; sourceTree = "<group>"; };
 		25AF83761DBA31D200FB057B /* ILDreamInspireDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILDreamInspireDetailViewController.m; sourceTree = "<group>"; };
@@ -707,6 +711,8 @@
 			children = (
 				25CE99BA1DA3954900024048 /* ILUserDreamViewController.h */,
 				25CE99BB1DA3954900024048 /* ILUserDreamViewController.m */,
+				25A1EE4D1DDC356000667208 /* ILMyDreamViewController.h */,
+				25A1EE4E1DDC356000667208 /* ILMyDreamViewController.m */,
 				2537DC191DB21B970056B4D9 /* UserHeaderView.h */,
 				2537DC1A1DB21B970056B4D9 /* UserHeaderView.m */,
 			);
@@ -857,9 +863,6 @@
 				25CE99931DA3945000024048 /* XWPublishController.h */,
 				25CE99941DA3945000024048 /* XWPublishController.m */,
 				25CE99951DA3945000024048 /* XWPublishController.xib */,
-				25A32F5D1DA906C5005EC757 /* ILJourneyPublishController.h */,
-				25A32F5E1DA906C5005EC757 /* ILJourneyPublishController.m */,
-				25A32F601DA90977005EC757 /* ILJourneyPublishController.xib */,
 			);
 			path = XWPublish;
 			sourceTree = "<group>";
@@ -1171,6 +1174,10 @@
 				25CE99EC1DA4A29700024048 /* CDUtils.m */,
 				25CE99ED1DA4A29700024048 /* CDBaseVC.h */,
 				25CE99EE1DA4A29700024048 /* CDBaseVC.m */,
+				2592EC831DE3D9F500B76DC2 /* ILFBaseViewController.h */,
+				2592EC841DE3D9F500B76DC2 /* ILFBaseViewController.m */,
+				2592EC861DE3E2F500B76DC2 /* ILFDBBaseViewController.h */,
+				2592EC871DE3E2F500B76DC2 /* ILFDBBaseViewController.m */,
 				25CE99EF1DA4A29700024048 /* CDEntryBaseVC.h */,
 				25CE99F01DA4A29700024048 /* CDEntryBaseVC.m */,
 				25CE99F11DA4A29700024048 /* CDEntryVC.h */,
@@ -1510,7 +1517,7 @@
 		25ECB60A1D96BE4D00792572 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Chen XueFeng";
 				TargetAttributes = {
 					25ECB6111D96BE4D00792572 = {
@@ -1518,6 +1525,9 @@
 						DevelopmentTeam = 86MNLPUJYP;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -1558,7 +1568,6 @@
 				25CE99971DA3945000024048 /* close@2x.png in Resources */,
 				25AF83731DBA2CE200FB057B /* category.plist in Resources */,
 				25ECB6281D96BE4D00792572 /* LaunchScreen.storyboard in Resources */,
-				25A32F611DA90977005EC757 /* ILJourneyPublishController.xib in Resources */,
 				25CE99AB1DA3945000024048 /* MGroupCell.xib in Resources */,
 				25CE999F1DA3945000024048 /* plus.png in Resources */,
 				25F47C771DD07A7F00970ADD /* JSQMessagesToolbarContentView.xib in Resources */,
@@ -1681,12 +1690,14 @@
 				252E0A071DD55A71006ED16F /* UIView+TYAlertView.m in Sources */,
 				25CE99F81DA4A29700024048 /* CDAddRequest.m in Sources */,
 				25F47C501DD07A7F00970ADD /* NSString+JSQMessages.m in Sources */,
+				2592EC881DE3E2F500B76DC2 /* ILFDBBaseViewController.m in Sources */,
 				25CE99B71DA3945000024048 /* XWPublishBaseController.m in Sources */,
 				252E09FF1DD55A71006ED16F /* TYAlertController+TransitionAnimate.m in Sources */,
 				25CE9A1B1DA4A2FC00024048 /* UIViewController+Alert.m in Sources */,
 				25F47C521DD07A7F00970ADD /* UIImage+JSQMessages.m in Sources */,
 				25F47C641DD07A7F00970ADD /* JSQMessage.m in Sources */,
 				25F478F11DCC322D00970ADD /* ILFriendListViewController.m in Sources */,
+				2592EC851DE3D9F500B76DC2 /* ILFBaseViewController.m in Sources */,
 				25F47C6C1DD07A7F00970ADD /* JSQMessagesCollectionViewCellIncoming.m in Sources */,
 				25AF83991DBBB65000FB057B /* SGBaseMenu.m in Sources */,
 				2537DC1B1DB21B970056B4D9 /* UserHeaderView.m in Sources */,
@@ -1721,7 +1732,6 @@
 				25F47BE71DD078D500970ADD /* DemoModelData.m in Sources */,
 				25F47C541DD07A7F00970ADD /* JSQMessagesViewController.m in Sources */,
 				25F478E21DCB4B8900970ADD /* ILCommentMessageViewController.m in Sources */,
-				25A32F5F1DA906C5005EC757 /* ILJourneyPublishController.m in Sources */,
 				25F47C591DD07A7F00970ADD /* JSQMessagesTimestampFormatter.m in Sources */,
 				25CE9A391DA4A4C600024048 /* UserProfileCell.m in Sources */,
 				25CE99A31DA3945000024048 /* MHeaderImaCell.m in Sources */,
@@ -1790,6 +1800,7 @@
 				25CE9A2F1DA4A3E900024048 /* UIViewController+IAPNotification.m in Sources */,
 				25CE99B11DA3945000024048 /* SDBaseProgressView.m in Sources */,
 				25CE9A1E1DA4A37600024048 /* MCPhotographyHelper.m in Sources */,
+				25A1EE4F1DDC356000667208 /* ILMyDreamViewController.m in Sources */,
 				25CE99B01DA3945000024048 /* MShowGroupAllSet.m in Sources */,
 				252E0A031DD55A71006ED16F /* TYAlertScaleFadeAnimation.m in Sources */,
 				25CE9A3F1DA4C1DA00024048 /* ILDreamInspireCell.m in Sources */,
@@ -1857,6 +1868,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1905,6 +1917,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1947,6 +1960,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.inspirelife.dream100;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1968,6 +1982,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.inspirelife.dream100;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -8,6 +8,7 @@
 
 #import "ILFriendListCell.h"
 #import "CDUserManager.h"
+#import "ILDreamDBManager.h"
 
 @implementation ILFriendListCell
 
@@ -66,6 +67,8 @@
                     [push setQuery:pushQuery];
                     [push setData:data];
                     [push sendPushInBackground];
+                    
+                    [ILDreamDBManager updateBadge:3 forUser:_userObject];
                     
                     [_followButton setTitle:@"已关注" forState:UIControlStateNormal];
                 }

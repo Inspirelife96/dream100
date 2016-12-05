@@ -26,7 +26,7 @@
     _userCountObject = userCountObject;
     AVUser *user = userCountObject[@"user"];
     _userNameLabel.text = user[@"username"];
-    _countLabel.text = [NSString stringWithFormat:@"共许下%ld个梦想", (long)[userCountObject[@"count"] integerValue]];
+    _countLabel.text = [NSString stringWithFormat:@"共许下%ld个梦想", (long)[userCountObject[@"dreamCount"] integerValue]];
     [[CDUserManager manager] getAvatarImageOfUser:user block:^(UIImage *image) {
         _profileImageView.image = image;
     }];

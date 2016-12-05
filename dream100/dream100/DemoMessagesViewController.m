@@ -405,6 +405,7 @@
                 [self.demoData.messages addObject:message];
                 [self finishSendingMessageAnimated:YES];
             });
+            [ILDreamDBManager pushMessage:text toUser:self.fromUser];
             [ILDreamDBManager AddMessageListFrom:[AVUser currentUser] to:self.fromUser message:text];
         }
     }];

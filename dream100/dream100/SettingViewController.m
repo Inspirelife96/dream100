@@ -33,12 +33,14 @@
 #import "ILCommentMessageViewController.h"
 #import "ILLikeMessageViewController.h"
 #import "ILFriendListViewController.h"
+#import "ILDreamDBManager.h"
 
 @interface SettingViewController () <UITableViewDelegate, UITableViewDataSource, ILUserProfileDefaultViewDelegate>
 
 @property(copy, nonatomic) NSArray *sectionTitleArray;
 @property(copy, nonatomic) NSArray *sectionContentArray;
 @property (nonatomic, strong) MCPhotographyHelper *photographyHelper;
+@property(strong, nonatomic) NSArray *badgeArray;
 
 @end
 
@@ -54,17 +56,58 @@
 
     _sectionContentArray = @[@[@""],
                              @[@"评论", @"喜欢", @"信件", @"关注"],
-                             @[@"关注", @"粉丝", @"黑名单"],
+                             @[@"关注", @"粉丝"/*, @"黑名单"*/],
                              @[@"分享", @"评价", @"反馈", @"隐私政策"]];
     
     _sectionTitleArray = @[@"", @"消息", @"好友管理", @"其它"];
+    
+    _badgeArray = @[@0,
+                    @0,
+                    @0,
+                    @0];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTabBadge:) name:@"ILBadgeUpdateNotification" object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:@"ILBadgeUpdateNotification"];
+}
+
+- (void)refreshTabBadge:(id)sender {
+    if([AVUser currentUser]) {
+        NSNumber *commentBadge = [[NSUserDefaults standardUserDefaults] objectForKey:@"commentBadge"];
+        NSNumber *likeBadge = [[NSUserDefaults standardUserDefaults] objectForKey:@"likeBadge"];
+        NSNumber *messageBadge = [[NSUserDefaults standardUserDefaults] objectForKey:@"messageBadge"];
+        NSNumber *followerBadge = [[NSUserDefaults standardUserDefaults] objectForKey:@"followerBadge"];
+        
+        _badgeArray = @[commentBadge, likeBadge, messageBadge, followerBadge];
+        
+        __block NSInteger badgeNumber = 0;
+        [_badgeArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            badgeNumber = badgeNumber + [obj integerValue];
+        }];
+        
+        if (badgeNumber > 0) {
+            NSString *badgeString = [NSString stringWithFormat:@"%ld", (long)badgeNumber];
+            [[[[self.tabBarController tabBar] items] objectAtIndex:4] setBadgeValue:badgeString];
+             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badgeNumber];
+        } else {
+            [[[[self.tabBarController tabBar] items] objectAtIndex:4] setBadgeValue:nil];
+            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+        }
+    }
+    
+    [_settingTableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [_settingTableView reloadData];
-    
+    [super viewWillAppear:animated];
     if (self.tabBarController) {
         self.tabBarController.tabBar.hidden = NO;
+    }
+    
+    if ([AVUser currentUser]) {
+        [ILDreamDBManager fetchBadge];
     }
 }
 
@@ -94,6 +137,19 @@
         defaultCell.textLabel.font = GetFontAvenirNext(14.0f);
         defaultCell.textLabel.textColor = FlatGray;
         defaultCell.textLabel.text = _sectionContentArray[indexPath.section][indexPath.row];
+        
+        if (indexPath.section == 1) {
+            if ([_badgeArray[indexPath.row] integerValue] > 0) {
+                defaultCell.detailTextLabel.font = GetFontAvenirNext(12.0f);
+                defaultCell.detailTextLabel.text = [NSString stringWithFormat:@"%ld条新消息", (long)[_badgeArray[indexPath.row] integerValue]];
+                defaultCell.detailTextLabel.textColor = FlatRed;
+            } else {
+                defaultCell.detailTextLabel.text = @"";
+            }
+        } else {
+            defaultCell.detailTextLabel.text = @"";
+        }
+        
         return defaultCell;
     }
 }
@@ -116,6 +172,7 @@
             [self showActionSheet];
         }
     } else if (indexPath.section == 1) {
+        [ILDreamDBManager resetBadge:indexPath.row];
         if (indexPath.row == 0) {
             ILCommentMessageViewController *commentMessageVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ILCommentMessageViewController"];
             [self.navigationController pushViewController:commentMessageVC animated:YES];
@@ -194,7 +251,16 @@
         [[MyDreamCache sharedInstance] clearCache];
         [[MyLikeCache sharedInstance] clearCache];
         
+        [[NSUserDefaults standardUserDefaults] setObject:@0  forKey:@"commentBadge"];
+        [[NSUserDefaults standardUserDefaults] setObject:@0  forKey:@"likeBadge"];
+        [[NSUserDefaults standardUserDefaults] setObject:@0  forKey:@"messageBadge"];
+        [[NSUserDefaults standardUserDefaults] setObject:@0  forKey:@"followerBadge"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [[[[self.tabBarController tabBar] items] objectAtIndex:4] setBadgeValue:nil];
+
         [_settingTableView reloadData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ILUserLogoutNotification" object:nil];
     }]];
     
     [alertView addAction:[TYAlertAction actionWithTitle:@"取消" style:TYAlertActionStyleCancel handler:^(TYAlertAction *action) {

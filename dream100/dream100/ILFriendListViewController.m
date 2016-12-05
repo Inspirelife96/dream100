@@ -272,13 +272,15 @@
     PYSearchViewController *searchViewController = [PYSearchViewController searchViewControllerWithHotSearches:nil searchBarPlaceholder:@"用户名" didSearchBlock:^(PYSearchViewController *searchViewController, UISearchBar *searchBar, NSString *searchText) {
         // 开始搜索执行以下代码
         // 如：跳转到指定控制器
+        
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        AVQuery *query = [AVQuery queryWithClassName:@"_user"];
+        AVQuery *query = [AVUser query];
         [query whereKey:@"username" containsString:searchText];
+        
         [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             if (error) {
-                //
+                [self alertError:error];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     PYTempViewController *searchResultVC = [self.storyboard instantiateViewControllerWithIdentifier:@"PYTempViewController"];

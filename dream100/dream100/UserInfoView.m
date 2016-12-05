@@ -25,10 +25,7 @@
         [[CDUserManager manager] getAvatarImageOfUser:userObject block:^(UIImage *image) {
             _profileImageView.image = image;
         }];
-        
-        NSString *userName = userObject[@"username"];
-
-        
+                
         _userNameLabel.text = userObject[@"username"];
     }
 }

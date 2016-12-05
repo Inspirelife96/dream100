@@ -20,7 +20,7 @@
 @implementation CDRegisterVC
 
 - (void)viewDidLoad {
-    self.isIncludeEmailField = YES;
+    self.isIncludeEmailField = NO;
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.title = @"注册";
@@ -57,10 +57,22 @@
             
             AVObject *dreamCountObject = [AVObject objectWithClassName:@"DreamCount"];
             [dreamCountObject setObject:[AVUser currentUser] forKey:@"user"];
-            [dreamCountObject setObject:@(0) forKey:@"count"];
+            [dreamCountObject setObject:@(0) forKey:@"dreamCount"];
+            [dreamCountObject setObject:@(0) forKey:@"journeyCount"];
+            [dreamCountObject setObject:@(0) forKey:@"likeCount"];
+            [dreamCountObject setObject:@(0) forKey:@"commentCount"];
             [dreamCountObject saveEventually];
-
             
+            AVObject *badgeCountObject = [AVObject objectWithClassName:@"BadgeCount"];
+            [badgeCountObject setObject:[AVUser currentUser] forKey:@"user"];
+            [badgeCountObject setObject:@(0) forKey:@"commentBadge"];
+            [badgeCountObject setObject:@(0) forKey:@"likeBadge"];
+            [badgeCountObject setObject:@(0) forKey:@"messageBadge"];
+            [badgeCountObject setObject:@(0) forKey:@"followerBadge"];
+            [badgeCountObject saveEventually];
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ILUserLoginNotification" object:nil];
+
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     }];

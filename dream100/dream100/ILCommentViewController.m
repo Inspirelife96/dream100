@@ -22,6 +22,7 @@
 #import "UIViewController+AlertError.h"
 #import "UIViewController+Login.h"
 #import "ILUserDreamViewController.h"
+#import "UIViewController+DreamAction.h"
 
 @interface ILCommentViewController () <UITableViewDataSource, UITableViewDelegate, CommentSectionHeaderCellDelegate, ILJourneyCellDelegate, CommentCellDelegate, ILUserProfileDefaultViewDelegate>
 
@@ -52,6 +53,17 @@
     _dataForCellArray = _commentArray;
     
     [self initTableViewDataAndFresh];
+    
+    UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"举报" style:UIBarButtonItemStylePlain target:self action:@selector(clickTipsOff:)];
+    self.navigationItem.rightBarButtonItem = rightBarButtonItem;
+}
+
+- (void)clickTipsOff:(id)sender {
+    if (![self isLogin]) {
+        return;
+    }
+    
+    [self tipoffs:self.view forObject:_journeyObject];
 }
 
 - (void)initTableViewDataAndFresh {
@@ -88,18 +100,10 @@
     if (self.tabBarController) {
         self.tabBarController.tabBar.hidden = YES;
     }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamDBOperationError:) name:@"ILDreamDBOperationErrorNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(journeyLikeUpdate:) name:@"ILJourneyLikeUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(journeyCommentUpdate:) name:@"ILJourneyCommentUpdateNotification" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamDBOperationErrorNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyLikeUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILJourneyCommentUpdateNotification" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -223,13 +227,6 @@
     if (_dataForCellArray == _commentArray) {
         [self refreshData];
     }
-}
-
-- (void)dreamDBOperationError:(id)sender {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [SGActionView showAlertWithTitle:@"操作失败1" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
-        //
-    }];
 }
 
 #pragma mark others
@@ -373,7 +370,5 @@
         [ILDreamDBManager addLike:journeyObject];
     }
 }
-
-
 
 @end

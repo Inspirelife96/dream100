@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ILFDBBaseViewController.h"
 
-@interface ILDreamBasedViewController : UIViewController
+@interface ILDreamBasedViewController : ILFDBBaseViewController
 
 @property(strong, nonatomic) IBOutlet UITableView *dreamTableView;
 @property(strong, nonatomic) IBOutlet UIView *headerView;

@@ -12,12 +12,12 @@
 #import <WXApi.h>
 #import <TencentOpenAPI/TencentOAuth.h>
 #import <TencentOpenAPI/QQApiInterface.h>
-#import <LeanCloudSocial/AVOSCloudSNS.h>
+//#import <LeanCloudSocial/AVOSCloudSNS.h>
 
 #import "iRate.h"
 
 #import <UserNotifications/UserNotifications.h>
-
+#import "ILDreamDBManager.h"
 
 
 @interface AppDelegate ()<UNUserNotificationCenterDelegate>
@@ -32,9 +32,7 @@
     [iRate sharedInstance].usesUntilPrompt = 15;
 }
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
     
     [self registerForRemoteNotification];
     
@@ -95,11 +93,17 @@
     NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
     if (![userDefault boolForKey:kUserDefaultFirstLaunch]) {
         [userDefault setBool:YES forKey:kUserDefaultFirstLaunch];
-        [userDefault setBool:NO  forKey:kUserDefaultIsVip];
-        [userDefault setBool:NO  forKey:kUserDefaultIsAdRemoved];
-        [userDefault setBool:NO  forKey:kUserDefaultIsSharedToday];
-        [userDefault setObject:@"10:00:00"  forKey:kUserDefaultDailyNotification];
-        [userDefault setBool:YES  forKey:kUserDefaultDailyNotificationStatus];
+//        [userDefault setBool:NO  forKey:kUserDefaultIsVip];
+//        [userDefault setBool:NO  forKey:kUserDefaultIsAdRemoved];
+//        [userDefault setBool:NO  forKey:kUserDefaultIsSharedToday];
+//        [userDefault setObject:@"10:00:00"  forKey:kUserDefaultDailyNotification];
+//        [userDefault setBool:YES  forKey:kUserDefaultDailyNotificationStatus];
+        [userDefault setObject:@0  forKey:@"commentBadge"];
+        [userDefault setObject:@0  forKey:@"likeBadge"];
+        [userDefault setObject:@0  forKey:@"messageBadge"];
+        [userDefault setObject:@0  forKey:@"followerBadge"];
+        [userDefault setObject:@0  forKey:@"totalBadge"];
+        
         [userDefault synchronize];
     }
     
@@ -109,7 +113,6 @@
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
         [AVOSCloud handleRemoteNotificationsWithDeviceToken:deviceToken];
 }
-
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 }
@@ -128,8 +131,20 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    if([AVUser currentUser]) {
+//        NSInteger badgeNumber = [AVInstallation currentInstallation].badge;
+//        UITabBarController  *tabbarController = (UITabBarController *)self.window.rootViewController;
+//        if (badgeNumber > 0) {
+//            NSString *badgeString = [NSString stringWithFormat:@"%ld", badgeNumber];
+//            [[[[tabbarController tabBar] items] objectAtIndex:4] setBadgeValue:badgeString];
+//
+//        } else {
+//            [[[[tabbarController tabBar] items] objectAtIndex:4] setBadgeValue:nil];
+//        }
+        [ILDreamDBManager fetchBadge];
+    }
 }
-
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 }

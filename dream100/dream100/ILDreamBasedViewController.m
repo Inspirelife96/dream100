@@ -60,17 +60,12 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [_dreamTableView reloadData];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamDBOperationError:) name:@"ILDreamDBOperationErrorNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamUIUpdate:) name:@"ILDreamUIUpdateNotification" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamDBOperationErrorNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamUIUpdateNotification" object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -136,16 +131,17 @@
 }
 
 #pragma mark Notification Handlers
-- (void)dreamDBOperationError:(id)sender {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [SGActionView showAlertWithTitle:@"操作失败2" message:@"貌似您的网络有问题，请确认后再次尝试。" buttonTitle:@"确认" selectedHandle:^(NSInteger index) {
-        //
-    }];
-}
-
 - (void)dreamUIUpdate:(id)sender {
     [MBProgressHUD hideHUDForView:self.view animated:YES];
     [_dreamTableView reloadData];
+}
+
+- (void)fetchMoreData {
+    // do nothing. overwrite in sub class
+}
+
+- (void)refreshData {
+    // do nothing. overwrite in sub class
 }
 
 @end

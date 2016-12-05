@@ -70,7 +70,6 @@
     NSArray *photoLayout = [self calculatePhotoLayout:imageCount];
     NSInteger line0Count = [photoLayout[0] integerValue];
     NSInteger line1Count = (photoLayout.count > 1) ? ([photoLayout[1] integerValue] + line0Count) : 0;
-    NSInteger line2Count = (photoLayout.count > 2) ? ([photoLayout[2] integerValue] + line1Count) : 0;
     
     CGFloat line0ImageWidth = ([[UIScreen mainScreen] bounds].size.width - 36.0f - ([photoLayout[0] integerValue] - 1) * 5.0f)/[photoLayout[0] integerValue];
     CGFloat line1ImageWidth = 0;

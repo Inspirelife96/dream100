@@ -29,19 +29,19 @@
     switch (_rankType) {
         case ILRankTypeDream:
             count = [countObject[@"dreamCount"] integerValue];
-            _countLabel.text = [NSString stringWithFormat:@"怀揣了%ld个梦想", count];
+            _countLabel.text = [NSString stringWithFormat:@"怀揣了%ld个梦想", (long)count];
             break;
         case ILRankTypeJourney:
             count = [countObject[@"journeyCount"] integerValue];
-            _countLabel.text = [NSString stringWithFormat:@"经历了%ld个实践", count];
+            _countLabel.text = [NSString stringWithFormat:@"经历了%ld个实践", (long)count];
             break;
         case ILRankTypeComment:
             count = [countObject[@"commentCount"] integerValue];
-            _countLabel.text = [NSString stringWithFormat:@"添加了%ld个评论", count];
+            _countLabel.text = [NSString stringWithFormat:@"添加了%ld个评论", (long)count];
             break;
         case ILRankTypeLike:
             count = [countObject[@"likeCount"] integerValue];
-            _countLabel.text = [NSString stringWithFormat:@"送出了%ld个喜欢", count];
+            _countLabel.text = [NSString stringWithFormat:@"送出了%ld个喜欢", (long)count];
             break;
     }
 }

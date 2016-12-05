@@ -9,6 +9,7 @@
 #import "UserHeaderView.h"
 #import "CDUserManager.h"
 #import "CDUtils.h"
+#import "ILDreamDBManager.h"
 
 @implementation UserHeaderView
 
@@ -64,39 +65,43 @@
 }
 
 - (IBAction)clickFollowButton:(id)sender {
-    [[CDUserManager manager] isMyFriend:_userObject block:^(BOOL isFriend, NSError *error) {
-        if(isFriend) {
-            [[CDUserManager manager] removeFriend:_userObject callback:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    [_followButton setTitle:@"关注他" forState:UIControlStateNormal];
-                }
-            }];
-        } else {
-            [[CDUserManager manager] addFriend:_userObject callback:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    AVQuery *pushQuery = [AVInstallation query];
-                    [pushQuery whereKey:@"owner" equalTo:_userObject];
-                    NSString *alertMessage = [NSString stringWithFormat:@"%@关注了您", [AVUser currentUser].username];;
-                    NSDictionary *data = @{
-                             @"alert": alertMessage,
-                             @"badge": @"Increment",
-                             @"followbadge": @"Increment",
-                             @"sound": @"cheering.caf",
-                             @"type": @"follow",
-                             @"dreamId": @"",
-                             @"journeyId": @"",
-                             };
-                    
-                    AVPush *push = [[AVPush alloc] init];
-                    [push setQuery:pushQuery];
-                    [push setData:data];
-                    [push sendPushInBackground];
-                    
-                    [_followButton setTitle:@"已关注" forState:UIControlStateNormal];
-                }
-            }];
-        }
-    }];
+    if ([AVUser currentUser]) {
+        [[CDUserManager manager] isMyFriend:_userObject block:^(BOOL isFriend, NSError *error) {
+            if(isFriend) {
+                [[CDUserManager manager] removeFriend:_userObject callback:^(BOOL succeeded, NSError *error) {
+                    if (succeeded) {
+                        [_followButton setTitle:@"关注他" forState:UIControlStateNormal];
+                    }
+                }];
+            } else {
+                [[CDUserManager manager] addFriend:_userObject callback:^(BOOL succeeded, NSError *error) {
+                    if (succeeded) {
+                        AVQuery *pushQuery = [AVInstallation query];
+                        [pushQuery whereKey:@"owner" equalTo:_userObject];
+                        NSString *alertMessage = [NSString stringWithFormat:@"%@关注了您", [AVUser currentUser].username];;
+                        NSDictionary *data = @{
+                                               @"alert": alertMessage,
+                                               @"badge": @"Increment",
+                                               @"followbadge": @"Increment",
+                                               @"sound": @"cheering.caf",
+                                               @"type": @"follow",
+                                               @"dreamId": @"",
+                                               @"journeyId": @"",
+                                               };
+                        
+                        AVPush *push = [[AVPush alloc] init];
+                        [push setQuery:pushQuery];
+                        [push setData:data];
+                        [push sendPushInBackground];
+                        
+                        [ILDreamDBManager updateBadge:3 forUser:_userObject];
+                        
+                        [_followButton setTitle:@"已关注" forState:UIControlStateNormal];
+                    }
+                }];
+            }
+        }];
+    }
     
     
     if([_delegate respondsToSelector:@selector(followOrUnfollow:)]) {

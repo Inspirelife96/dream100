@@ -62,7 +62,13 @@
     
     [self.tabBarController.tabBar setHidden:YES];
     
-    self.navigationItem.title = @"添加梦想";
+    
+    if (_type == 0) {
+        self.navigationItem.title = @"添加梦想";
+    } else {
+        self.navigationItem.title = @"添加心路历程";
+
+    }
 
     dreamModel = [[ILDreamModel alloc] init];
     journeyModel = [[ILJourneyModel alloc] init];
@@ -75,14 +81,14 @@
     [_configTableView reloadData];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamUIUpdate:) name:@"ILDreamUIUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamDBOperationError:) name:@"ILDreamErrorNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dreamDBOperationError:) name:@"ILDreamDBOperationErrorNotification" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamUIUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamErrorNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILDreamDBOperationErrorNotification" object:nil];
 }
 
 - (void)dreamUIUpdate:(id)NotificationInfo {
@@ -255,7 +261,7 @@
 //文本框每次输入文字都会调用  -> 更改文字个数提示框
 - (void)textViewDidChangeSelection:(UITextView *)textView{
 
-    NSLog(@"当前输入框文字个数:%ld",_noteTextView.text.length);
+    NSLog(@"当前输入框文字个数:%ld",(unsigned long)_noteTextView.text.length);
     //
     _textNumberLabel.text = [NSString stringWithFormat:@"%lu/%d    ",(unsigned long)_noteTextView.text.length,kMaxTextCount];
     if (_noteTextView.text.length > kMaxTextCount) {
@@ -373,9 +379,9 @@
 #pragma mark - UITableView Delegate/Datasource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (_type == 0) {
-        return 2;
-    } else {
         return 1;
+    } else {
+        return 0;
     }
 }
 
@@ -389,20 +395,19 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.font = GetFontAvenirNext(14.0f);
 
-    if ((_type == 0 && indexPath.row == 1) || (_type == 1)) {
-        cell.textLabel.text = @"是否公开";
-        _openSwitch.frame = CGRectMake(SCREENWIDTH - 10.0f - 51.0f, 6.5f, 51.0f, 31.0f);
-        [cell.contentView addSubview:_openSwitch];
-    } else {
-        cell.textLabel.text = @"梦想标签";
-        cell.detailTextLabel.text = @"请选择一个标签";
-        cell.detailTextLabel.font = GetFontAvenirNext(13.0f);
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        if (dreamModel.dreamCategoryString && ![dreamModel.dreamCategoryString isEqualToString:@""]) {
-            cell.detailTextLabel.text = dreamModel.dreamCategoryString;
-            cell.detailTextLabel.textColor = FlatBlue;
-        }
+//    if ((_type == 0 && indexPath.row == 1) || (_type == 1)) {
+//        cell.textLabel.text = @"是否公开";
+//        _openSwitch.frame = CGRectMake(SCREENWIDTH - 10.0f - 51.0f, 6.5f, 51.0f, 31.0f);
+//        [cell.contentView addSubview:_openSwitch];
+//    } else {
+    cell.textLabel.text = @"梦想标签";
+    cell.detailTextLabel.font = GetFontAvenirNext(13.0f);
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if (dreamModel.dreamCategoryString == nil || [dreamModel.dreamCategoryString isEqualToString:@""]) {
+        dreamModel.dreamCategoryString = @"#一生所愿#";
     }
+    cell.detailTextLabel.text = dreamModel.dreamCategoryString;
+    cell.detailTextLabel.textColor = FlatBlue;
 
     return cell;
 }

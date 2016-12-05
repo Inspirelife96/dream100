@@ -11,8 +11,7 @@
 @implementation MGroupCell
 
 - (void)awakeFromNib {
-    // Initialization code
-//    self.lblInfo.textColor = [UIColor colorWithRed:51 green:51 blue:51 alpha:1];
+    [super awakeFromNib];
     
     if([[[UIDevice currentDevice] systemVersion] floatValue] > 8.0){
         self.layoutMargins = UIEdgeInsetsZero;

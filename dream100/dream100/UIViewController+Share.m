@@ -50,6 +50,10 @@
                        }
                        case SSDKResponseStateFail:
                        {
+                           if (!error) {
+                               break;
+                           }
+                           
                            if (platformType == SSDKPlatformTypeSMS && [error code] == 201) {
                                [self presentAlertTitle:@"分享失败" message:@"失败原因可能是：1、短信应用没有设置帐号；2、设备不支持短信应用；3、短信应用在iOS 7以上才能发送带附件的短信。"];
                                break;

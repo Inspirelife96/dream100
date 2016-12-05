@@ -48,5 +48,9 @@ typedef NS_ENUM(NSInteger, ILTipoffsType) {
 + (void)addTipoffs:(ILTipoffsType)type toObject:(AVObject *)object;
 
 + (void)AddMessageListFrom:(AVUser *)fromUser to:(AVUser *)toUser message:(NSString *)messageString;
++ (void)pushMessage:(NSString *)message toUser:(AVUser *)toUser;
++ (void)updateBadge:(NSInteger)type forUser:(AVUser *)userObject;
++ (void)resetBadge:(NSInteger)type;
++ (void)fetchBadge;
 
 @end

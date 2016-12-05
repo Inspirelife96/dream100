@@ -10,8 +10,9 @@
 #import "ILFriendListCell.h"
 #import "ILUserProfileDelegate.h"
 #import "ILUserDreamViewController.h"
+#import "DemoMessagesViewController.h"
 
-@interface PYTempViewController () <UITableViewDelegate, UITableViewDataSource, ILUserProfileDelegate>
+@interface PYTempViewController () <UITableViewDelegate, UITableViewDataSource, ILUserProfileDefaultViewDelegate, ILFriendListCellDelegate>
 
 @end
 
@@ -44,8 +45,8 @@
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ILFriendListCell *userSimpleCell = [tableView dequeueReusableCellWithIdentifier:@"ILFriendListCell" forIndexPath:indexPath];
-    userSimpleCell.userObject = self.searchResultArray[indexPath.row];
     userSimpleCell.delegate = self;
+    userSimpleCell.userObject = (AVUser *)self.searchResultArray[indexPath.row];
     userSimpleCell.messageButton.tag = indexPath.row;
     userSimpleCell.followButton.tag = indexPath.row;
 
@@ -57,19 +58,22 @@
     return 64.0f;
 }
 
-- (void)clickUserProfile:(id)sender {
-    UIButton *selectedButton = (UIButton *)sender;
+#pragma mark - ILUserProfileDefaultViewDelegate
+- (void)clickProfile:(AVUser *)userObject {
     ILUserDreamViewController *userDreamView = [self.storyboard instantiateViewControllerWithIdentifier:@"ILUserDreamViewController"];
-    userDreamView.currentUser = self.searchResultArray[selectedButton.tag];
+    userDreamView.currentUser = userObject;
     [self.navigationController pushViewController:userDreamView animated:YES];
 }
 
-- (void)clickFollow:(id)sender {
-    
+#pragma mark - ILFriendListCellDelegate
+- (void)clickFollow:(AVUser *)userObject {
+    // do nothing?
 }
 
-- (void)clickMessage:(id)sender {
-    
+- (void)clickMessage:(AVUser *)userObject {
+    DemoMessagesViewController *vc = [DemoMessagesViewController messagesViewController];
+    vc.fromUser = userObject;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 

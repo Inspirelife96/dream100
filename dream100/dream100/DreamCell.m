@@ -146,8 +146,8 @@
             } else {
                 if (objects.count > 0) {
                     AVObject *object = objects[0];
-                    NSInteger count = [object[@"count"] integerValue];
-                    [object setObject:@(count + 1) forKey:@"count"];
+                    NSInteger count = [object[@"dreamCount"] integerValue];
+                    [object setObject:@(count + 1) forKey:@"dreamCount"];
                     [object saveEventually];
                 }
             }
