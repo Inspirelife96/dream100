@@ -1,0 +1,36 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+platform:ios, '8.0'
+
+target "dream100" do
+
+pod 'MBProgressHUD'
+pod 'ActionSheetPicker-3.0'
+pod 'FormatterKit'
+pod 'UIImageEffects'
+pod 'THSegmentedPager'
+pod 'ChameleonFramework'
+pod 'TAPromotee'
+pod 'DZNEmptyDataSet'
+pod 'Google-Mobile-Ads-SDK'
+pod 'ShareSDK3'
+pod 'MOBFoundation'
+pod 'ShareSDK3/ShareSDKPlatforms/QQ'
+pod 'ShareSDK3/ShareSDKPlatforms/WeChat'
+pod 'ShareSDK3/ShareSDKExtension'
+pod 'ShareSDK3/ShareSDKUI'
+pod 'ShareSDK3/ShareSDKPlatforms/Mail'
+pod 'ShareSDK3/ShareSDKPlatforms/SMS'
+pod 'LZAlertViewHelper'
+pod 'AFNetworking'
+pod 'LeanCloudSocial'
+pod 'BHInfiniteScrollView'
+pod 'JMActionSheetDescription'
+pod "AVOSCloud" , "~> 3.6.0"
+pod "MJRefresh" , "~> 3.1.9"
+pod "SDWebImage" , "~> 3.8.0"
+pod "UITableView+FDTemplateLayoutCell" , "~> 1.5.beta"
+pod "PYSearch"
+pod 'YBAttributeTextTapAction'
+
+end
